@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852600931469357244}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.092532724, y: 0.0042542177, z: -0.00039535426, w: 0.9957005}
+  m_LocalRotation: {x: 0.09253275, y: 0.0041885925, z: -0.00038925544, w: 0.9957008}
   m_LocalPosition: {x: -0.20943947, y: 15, z: -59.999268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -153,7 +153,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144585900506110202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09253274, y: 0.004254218, z: -0.00039535423, w: 0.9957005}
+  m_LocalRotation: {x: 0.092532754, y: 0.0041885925, z: -0.00038925553, w: 0.9957008}
   m_LocalPosition: {x: -0.20943947, y: 15, z: -59.999268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -304,7 +304,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2163894826043063677}
-  - component: {fileID: 5894595897797641058}
+  - component: {fileID: 2229037515076188699}
   m_Layer: 0
   m_Name: CameaFollow
   m_TagString: Untagged
@@ -327,7 +327,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6959112546037446708}
   m_LocalEulerAnglesHint: {x: 0, y: 0.4, z: 0}
---- !u!114 &5894595897797641058
+--- !u!114 &2229037515076188699
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -343,11 +343,11 @@ MonoBehaviour:
   rotateSpeed: 100
   zoomSpeed: 1000
   edgeScroll: 20
-  dragSpeed: 3
+  dragSpeed: 2
   RightDragSpeed: 2
   downRotateSpeed: 5
-  FOVconstraints: 0500000082000000
-  YConstraints: ecffffffc8000000
+  FOVconstraints: 0500000064000000
+  YConstraints: 010000003c000000
   useEdgeScrolling: 0
   useDragging: 1
   followCam: {fileID: 8591991666468122944}
@@ -361,7 +361,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6959112546037446708}
   m_Layer: 0
-  m_Name: Cameras
+  m_Name: CamsImported
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
