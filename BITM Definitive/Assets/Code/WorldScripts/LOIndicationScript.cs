@@ -8,12 +8,15 @@ public class LOIndicationScript : MonoBehaviour
 
     public KeyCode LockOnActive = KeyCode.Space;
     public bool LockedOn = false;
+
     GameObject[] Enemies;
+    RectTransform rectTransform;
     UnityEngine.UI.Image image;
 
     void Awake()
     {
         image = GetComponent<UnityEngine.UI.Image>();
+        rectTransform = GetComponent<RectTransform>();
         image.enabled = false;
     }
     void Update()
@@ -44,5 +47,6 @@ public class LOIndicationScript : MonoBehaviour
     void WhileLockedOn()
     {
         image.fillAmount = Enemies[0].GetComponent<EnemyScript>().HealthPercent();
+        rectTransform.position = Camera.main.WorldToScreenPoint(Enemies[0].transform.position);
     }
 }
