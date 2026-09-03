@@ -2,6 +2,7 @@ using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class CameraSystem : MonoBehaviour
 {
@@ -20,16 +21,31 @@ public class CameraSystem : MonoBehaviour
     [SerializeField] bool useDragging = true;
 
     [SerializeField] CinemachineFollow followCam;
+    [SerializeField] GameObject Player;
+
+    CameraMovement cameraMovement;
+    InputAction movementAction;
+
     Vector2 lastMousePos = Vector2.zero;
     Vector3 targetOffset;
     float targetFov;
     bool middleMouseDown = false;
     bool rightMouseDown = false;
+    bool shiftDown = false;
     void Awake()
     {
         targetOffset = followCam.GetComponent<CinemachineFollow>().FollowOffset;
         targetFov = followCam.GetComponent<CinemachineCamera>().Lens.FieldOfView;
-        
+        cameraMovement = new CameraMovement();
+    }
+    void OnEnable()
+    {
+        movementAction = cameraMovement.CameraControls.Rotate;
+        movementAction.Enable();
+    }
+    void OnDisable()
+    {
+        movementAction.Disable();
     }
     void Update()
     {
@@ -43,9 +59,11 @@ public class CameraSystem : MonoBehaviour
             EdgeScrolling();
         }
         Rotation();
-        //CameraZoomFOV();
-        CameraZoomMovement();
+        CameraZoomFOV();
+        //CameraZoomMovement();
         RightRotation();
+        ArrowRotation();
+        transform.position = Player.transform.position;
     }
     void EdgeScrolling()
     {
@@ -85,11 +103,13 @@ public class CameraSystem : MonoBehaviour
     void Movement()
     {
         Vector3 input = Vector3.zero;
-        if (Input.GetKey(KeyCode.W)) input.z += 1f;
-        if (Input.GetKey(KeyCode.S)) input.z -= 1f;
-        if (Input.GetKey(KeyCode.A)) input.x -= 1f;
-        if (Input.GetKey(KeyCode.D)) input.x += 1f;
-        if (Input.GetKey(KeyCode.LeftShift)) input.y += 1f;
+        if (Input.GetKeyDown(KeyCode.LeftShift)) shiftDown = true;
+        if (Input.GetKeyUp(KeyCode.LeftShift)) shiftDown = false;
+        if (Input.GetKey(KeyCode.W) && shiftDown) input.z += 1f;
+        if (Input.GetKey(KeyCode.S) && shiftDown) input.z -= 1f;
+        if (Input.GetKey(KeyCode.A) && shiftDown) input.x -= 1f;
+        if (Input.GetKey(KeyCode.D) && shiftDown) input.x += 1f;
+        if (Input.GetKey(KeyCode.Tab)) input.y += 1f;
         if (Input.GetKey(KeyCode.LeftControl)) input.y -= 1f;
         Vector3 movement = transform.forward * input.z + transform.right * input.x + transform.up * input.y;
         transform.position += moveSpeed * Time.deltaTime * movement;
@@ -150,5 +170,17 @@ public class CameraSystem : MonoBehaviour
             }
             transform.eulerAngles += new Vector3(0, rotateInput * Time.deltaTime * rotateSpeed, 0);
         }
+    }
+    void ArrowRotation()
+    {
+        Vector3 input = movementAction.ReadValue<Vector2>();
+        targetOffset.y -= input.y / -RightDragSpeed;
+        if (targetOffset.y != 0)
+        {
+            targetOffset.y = Mathf.Clamp(targetOffset.y, YConstraints[0], YConstraints[1]);
+            followCam.GetComponent<CinemachineFollow>().FollowOffset =
+                Vector3.Lerp(followCam.GetComponent<CinemachineFollow>().FollowOffset, targetOffset, Time.deltaTime * downRotateSpeed);
+        }
+        transform.eulerAngles += new Vector3(0, input.x * Time.deltaTime * rotateSpeed, 0);
     }
 }

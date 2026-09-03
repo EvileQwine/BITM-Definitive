@@ -5,9 +5,13 @@ using UnityEngine.Windows;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float moveSpeedMulti = 20f;
+    [SerializeField] float rotationSpeed = 10f;
+    [SerializeField] GameObject CameraFollow;
 
     PlayerInputs playerInputs;
-    InputAction Movement;
+    InputAction MovementAction;
+
+    Vector3 horMovement;
 
     void Awake()
     {
@@ -15,17 +19,21 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnEnable()
     {
-        Movement = playerInputs.Player.Move;
-        Movement.Enable();
+        MovementAction = playerInputs.Player.Move;
+        MovementAction.Enable();
     }
     void OnDisable()
     {
-        Movement.Disable();    
+        MovementAction.Disable();    
     }
     void FixedUpdate()
     {
-        Vector3 input = Movement.ReadValue<Vector2>();
-        Vector3 movement = transform.forward * input.y + transform.right * input.x;
-        transform.position += moveSpeedMulti * Time.deltaTime * movement;
+        Vector3 input = MovementAction.ReadValue<Vector2>();
+        horMovement = (Quaternion.Euler(0, -90, 0) * Camera.main.transform.right) * input.y + Camera.main.transform.right * input.x;
+        if (horMovement != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(horMovement),Time.deltaTime * rotationSpeed);
+        }
+        transform.position += moveSpeedMulti * Time.deltaTime * horMovement;
     }
 }

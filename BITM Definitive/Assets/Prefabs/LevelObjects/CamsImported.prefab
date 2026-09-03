@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852600931469357244}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09253275, y: 0.0041885925, z: -0.00038925544, w: 0.9957008}
-  m_LocalPosition: {x: -0.20943947, y: 15, z: -59.999268}
+  m_LocalRotation: {x: 0.09253279, y: 0.004188589, z: -0.00038925526, w: 0.9957008}
+  m_LocalPosition: {x: -0.20943928, y: 15, z: -59.999268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -153,8 +153,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144585900506110202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.092532754, y: 0.0041885925, z: -0.00038925553, w: 0.9957008}
-  m_LocalPosition: {x: -0.20943947, y: 15, z: -59.999268}
+  m_LocalRotation: {x: 0.0925328, y: 0.004188589, z: -0.00038925535, w: 0.9957008}
+  m_LocalPosition: {x: -0.20943928, y: 15, z: -59.999268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -347,7 +347,7 @@ MonoBehaviour:
   RightDragSpeed: 2
   downRotateSpeed: 5
   FOVconstraints: 0500000064000000
-  YConstraints: 010000003c000000
+  YConstraints: ecffffff3c000000
   useEdgeScrolling: 0
   useDragging: 1
   followCam: {fileID: 8591991666468122944}
