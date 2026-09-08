@@ -40,11 +40,10 @@ public class LOIndicationScript : MonoBehaviour
     {
         if (Player.GetComponent<PlayerMovement>().horMovement != null)
         {
-            RaycastHit hit;
-            if (Physics.SphereCast(Player.transform.position, 10, Player.GetComponent<PlayerMovement>().horMovement, out hit, 200))
+            if (Physics.SphereCast(Player.transform.position, 15, Player.GetComponent<PlayerMovement>().horMovement, out RaycastHit hit, 200))
             {
                 GameObject hitObject = hit.transform.gameObject;
-                if (hitObject != null)
+                if (hitObject != null && hitObject.GetComponent<EnemyScript>() != null)
                 {
                     LockedOnEnemy = hitObject;
                     LockedOn = LOstates.On;

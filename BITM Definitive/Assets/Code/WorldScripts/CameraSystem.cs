@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 public class CameraSystem : MonoBehaviour
 {
+
     [SerializeField] bool UnlockedCamera = false;
 
     [SerializeField] int moveSpeed = 20;
@@ -16,8 +17,7 @@ public class CameraSystem : MonoBehaviour
     [SerializeField] float RightDragSpeed = 2f;
     [SerializeField] float downRotateSpeed = 5f;
 
-    [SerializeField] int[] FOVconstraints = new int[2] { 5, 100 };
-    [SerializeField] int[] YConstraints = new int[2] { 1, 60 };
+    [SerializeField] int[] YConstraints = new int[2] { -20, 60 };
 
     [SerializeField] bool useEdgeScrolling = false;
     [SerializeField] bool useDragging = true;
@@ -63,7 +63,6 @@ public class CameraSystem : MonoBehaviour
                 EdgeScrolling();
             }
             Rotation();
-            //CameraZoomFOV();
             CameraZoomMovement();
             RightRotation();
         }
@@ -129,20 +128,6 @@ public class CameraSystem : MonoBehaviour
         if (Input.GetKey(KeyCode.E)) rotateInput -= 1f;
         transform.eulerAngles += new Vector3(0, rotateInput * Time.deltaTime * rotateSpeed, 0);
     }
-    void CameraZoomFOV()
-    {
-        if (Input.mouseScrollDelta.y > 0)
-        {
-            targetFov -= 5;
-        }
-        if (Input.mouseScrollDelta.y < 0)
-        {
-            targetFov += 5;
-        }
-        targetFov = Mathf.Clamp(targetFov, FOVconstraints[0], FOVconstraints[1]);
-        followCam.GetComponent<CinemachineCamera>().Lens.FieldOfView =
-            Mathf.Lerp(followCam.GetComponent<CinemachineCamera>().Lens.FieldOfView, targetFov, Time.deltaTime * zoomSpeed);
-    }
     void CameraZoomMovement()
     {
         int input = 0;
@@ -190,5 +175,6 @@ public class CameraSystem : MonoBehaviour
                 Vector3.Lerp(followCam.GetComponent<CinemachineFollow>().FollowOffset, targetOffset, Time.deltaTime * downRotateSpeed);
         }
         transform.eulerAngles += new Vector3(0, input.x * Time.deltaTime * rotateSpeed, 0);
+
     }
 }
