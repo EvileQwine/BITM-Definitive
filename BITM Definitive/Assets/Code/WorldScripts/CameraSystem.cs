@@ -6,6 +6,8 @@ using UnityEngine.UIElements;
 
 public class CameraSystem : MonoBehaviour
 {
+    [SerializeField] bool UnlockedCamera = false;
+
     [SerializeField] int moveSpeed = 20;
     [SerializeField] int rotateSpeed = 100;
     [SerializeField] int zoomSpeed = 1000;
@@ -49,21 +51,27 @@ public class CameraSystem : MonoBehaviour
     }
     void Update()
     {
-        Movement();
-        if (useDragging)
+        if (UnlockedCamera)
         {
-            Dragging();
+            Movement();
+            if (useDragging)
+            {
+                Dragging();
+            }
+            if (useEdgeScrolling)
+            {
+                EdgeScrolling();
+            }
+            Rotation();
+            //CameraZoomFOV();
+            CameraZoomMovement();
+            RightRotation();
         }
-        if (useEdgeScrolling)
+        else
         {
-            EdgeScrolling();
+            transform.position = Player.transform.position;
+            ArrowRotation();
         }
-        Rotation();
-        CameraZoomFOV();
-        //CameraZoomMovement();
-        RightRotation();
-        ArrowRotation();
-        transform.position = Player.transform.position;
     }
     void EdgeScrolling()
     {

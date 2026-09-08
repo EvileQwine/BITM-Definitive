@@ -1,15 +1,18 @@
-using UnityEngine;
-using Unity.VisualScripting;
-using UnityEngine.UIElements;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEngine.UI.Image;
 
 public class LOIndicationScript : MonoBehaviour
 {
+    [SerializeField] GameObject Player;
 
     public KeyCode LockOnActive = KeyCode.Space;
-    public bool LockedOn = false;
+    public LOstates LockedOn;
 
     GameObject[] Enemies;
+    public GameObject LockedOnEnemy;
     RectTransform rectTransform;
     UnityEngine.UI.Image image;
 
@@ -18,35 +21,61 @@ public class LOIndicationScript : MonoBehaviour
         image = GetComponent<UnityEngine.UI.Image>();
         rectTransform = GetComponent<RectTransform>();
         image.enabled = false;
-    }
+        LockedOn = LOstates.Off;
+}
     void Update()
     {
         if (Input.GetKeyDown(LockOnActive))
         { JustLockedOn(); }
         if (Input.GetKeyUp(LockOnActive))
         {
-            LockedOn = false;
-            image.enabled = false;
+            JustLockedOff();
         }
-        if (LockedOn)
+        if (LockedOn == LOstates.On)
         {
             WhileLockedOn();
         }
     }
-    void JustLockedOn()
+    public void JustLockedOn()
     {
-        LockedOn = true;
-        image.enabled = true;
+        if (Player.GetComponent<PlayerMovement>().horMovement != null)
+        {
+            RaycastHit hit;
+            if (Physics.SphereCast(Player.transform.position, 10, Player.GetComponent<PlayerMovement>().horMovement, out hit, 200))
+            {
+                GameObject hitObject = hit.transform.gameObject;
+                if (hitObject != null)
+                {
+                    LockedOnEnemy = hitObject;
+                    LockedOn = LOstates.On;
+                    image.enabled = true;
+                    return;
+                }
+            }
+        }
         EnemyScript[] temp = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
         Enemies = new GameObject[temp.Count()];
         for (int i = 0; i < temp.Length; i++)
         {
             Enemies[i] = temp[i].gameObject;
         }
+        if (Enemies.Length == 0)
+        {
+            LockedOn = LOstates.None;
+            return;
+        }
+        LockedOnEnemy = Enemies.ToList().OrderBy(x => (x.transform.position - Player.transform.position).magnitude).First();
+        LockedOn = LOstates.On;
+        image.enabled = true;
+    }
+    public void JustLockedOff()
+    {
+        LockedOn = LOstates.Off;
+        image.enabled = false;
     }
     void WhileLockedOn()
     {
-        image.fillAmount = Enemies[0].GetComponent<EnemyScript>().HealthPercent();
-        rectTransform.position = Camera.main.WorldToScreenPoint(Enemies[0].transform.position);
+        image.fillAmount = LockedOnEnemy.GetComponent<EnemyScript>().HealthPercent();
+        rectTransform.position = Camera.main.WorldToScreenPoint(LockedOnEnemy.transform.position);
     }
 }
