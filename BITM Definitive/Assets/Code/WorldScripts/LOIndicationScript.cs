@@ -8,7 +8,6 @@ public class LOIndicationScript : MonoBehaviour
 {
     [SerializeField] GameObject Player;
 
-    public KeyCode LockOnActive = KeyCode.Space;
     public LOstates LockedOn;
 
     GameObject[] Enemies;
@@ -25,12 +24,6 @@ public class LOIndicationScript : MonoBehaviour
 }
     void Update()
     {
-        if (Input.GetKeyDown(LockOnActive))
-        { JustLockedOn(); }
-        if (Input.GetKeyUp(LockOnActive))
-        {
-            JustLockedOff();
-        }
         if (LockedOn == LOstates.On)
         {
             WhileLockedOn();

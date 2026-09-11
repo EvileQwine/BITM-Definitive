@@ -134,12 +134,11 @@ public class CameraSystem : MonoBehaviour
         if (Input.mouseScrollDelta.y > 0) input -= 1;
         if (Input.mouseScrollDelta.y < 0) input += 1;
         Vector3 movement = (followCam.transform.position - transform.position).normalized;
-        transform.position += zoomSpeed * Time.deltaTime * movement * input;
+        transform.position += input * Time.deltaTime * zoomSpeed * movement;
     }
     void RightRotation()
     {
-        Vector3 input = Vector3.zero;
-        float rotateInput = 0f;
+        float rotateInput ;
         if (Input.GetMouseButtonDown(1))
         {
             rightMouseDown = true;
