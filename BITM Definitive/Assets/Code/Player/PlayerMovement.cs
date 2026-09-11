@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float fullJumpTime = 0.3f;
     [SerializeField] float minJump = 0.2f;
 
+    [SerializeField] float lockOnSpeedReductionMultiplier = 0.7f;
+
     [SerializeField] LayerMask groundLayer;
 
     PlayerInputs playerInputs;
@@ -132,7 +134,15 @@ public class PlayerMovement : MonoBehaviour
     }
     void MovePlayer()
     {
-        Vector3 targetVelocity = horMovement * moveSpeedMulti;
+        Vector3 targetVelocity;
+        if (LOIScript.LockedOn == LOstates.Off)
+        {
+            targetVelocity = horMovement * moveSpeedMulti;
+        }
+        else
+        {
+            targetVelocity = horMovement * moveSpeedMulti * lockOnSpeedReductionMultiplier;
+        }
         Vector3 velocity = rb.linearVelocity;
         velocity.x = targetVelocity.x;
         velocity.z = targetVelocity.z;

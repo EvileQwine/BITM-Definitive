@@ -59,6 +59,7 @@ public class LOIndicationScript : MonoBehaviour
         LockedOnEnemy = Enemies.ToList().OrderBy(x => (x.transform.position - Player.transform.position).magnitude).First();
         LockedOn = LOstates.On;
         image.enabled = true;
+        Player.GetComponent<PlayerHealthScript>().ResetCounter();
     }
     public void JustLockedOff()
     {
