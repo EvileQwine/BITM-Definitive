@@ -1,0 +1,57 @@
+{
+    "version": 1,
+    "name": "ManagerInputs",
+    "maps": [
+        {
+            "name": "MgmtActions",
+            "id": "9fb1bef9-c89f-4876-a355-ee8cacae5a1a",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "2ea597b3-7a3d-41e7-9be9-f281875c2acc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3246a54b-a367-4fcd-a511-d12c0172b478",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e05f651-7e1c-4201-8170-d8dd1acb1d1f",
+                    "path": "<DualSenseGamepadHID>/touchpadButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8f2cf1aa-5851-4600-9164-c7e5194675df",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -341,15 +341,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraSystem
   UnlockedCamera: 0
+  cameraDistance: 25
   moveSpeed: 20
   rotateSpeed: 100
   zoomSpeed: 1000
   edgeScroll: 20
   dragSpeed: 2
   RightDragSpeed: 2
-  downRotateSpeed: 5
-  FOVconstraints: 0500000064000000
-  YConstraints: ecffffff3c000000
+  downRotateSpeed: 3
+  YConstraints: 0000000014000000
   useEdgeScrolling: 0
   useDragging: 1
   followCam: {fileID: 8591991666468122944}
@@ -367,7 +367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
   m_Actions: {fileID: -944628639613478452, guid: 3c45fcd06508b9b4a9fccc51324b904e, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:

@@ -17,7 +17,7 @@ public class CameraSystem : MonoBehaviour
     [SerializeField] int edgeScroll = 20;
     [SerializeField] float dragSpeed = 2f;
     [SerializeField] float RightDragSpeed = 2f;
-    [SerializeField] float downRotateSpeed = 5f;
+    [SerializeField] float downRotateSpeed = 3f;
 
     [SerializeField] int[] YConstraints = new int[2] { 0, 20 };
 
@@ -177,6 +177,16 @@ public class CameraSystem : MonoBehaviour
             followCam.GetComponent<CinemachineFollow>().FollowOffset.z = followCam.GetComponent<CinemachineFollow>().FollowOffset.y - cameraDistance;
         }
         transform.eulerAngles += new Vector3(0, input.x * Time.deltaTime * rotateSpeed, 0);
-
+    }
+    public void CameraBlurred(bool okay)
+    {
+        if (okay)
+        {
+            followCam.GetComponent<CinemachineVolumeSettings>().enabled = true;
+        }
+        else
+        {
+            followCam.GetComponent<CinemachineVolumeSettings>().enabled = false;
+        }
     }
 }

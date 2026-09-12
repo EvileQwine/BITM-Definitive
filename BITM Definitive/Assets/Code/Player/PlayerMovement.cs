@@ -87,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
     void GenerateMovement()
     {
         Vector3 input = MovementAction.ReadValue<Vector2>();
-        horMovement = (Quaternion.Euler(0, -90, 0) * Camera.main.transform.right) * input.y + Camera.main.transform.right * input.x;
+        horMovement = (Quaternion.Euler(0, -90, 0) * Camera.main.transform.right * input.y + Camera.main.transform.right * input.x).normalized;
     }
     void CheckGrounded()
     {
