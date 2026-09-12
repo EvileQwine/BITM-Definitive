@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
@@ -17,6 +18,9 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float lockOnSpeedReductionMultiplier = 0.7f;
 
+    [SerializeField] float dashStrength = 80f;
+    [SerializeField] float dashTime = 0.2f;
+
     [SerializeField] LayerMask groundLayer;
 
     PlayerInputs playerInputs;
@@ -25,7 +29,9 @@ public class PlayerMovement : MonoBehaviour
 
     LOIndicationScript LOIScript;
 
-    public bool isGrounded = false;
+    [SerializeField] bool canMove = true;
+
+    bool isGrounded = false;
     bool jumpPressed;
     float jumpHeldTime;
     float raycastDistance;
@@ -37,18 +43,19 @@ public class PlayerMovement : MonoBehaviour
         LOIScript = FindFirstObjectByType<LOIndicationScript>();
         rb = GetComponent<Rigidbody>();
         raycastDistance = (GetComponent<CapsuleCollider>().height * transform.localScale.y / 2) + 0.2f;
-        //RBFreeze(false);
     }
     void OnEnable()
     {
         MovementAction = playerInputs.Player.Move;
         playerInputs.Player.Jump.started += JumpStarted;
         playerInputs.Player.Jump.canceled += JumpEnded;
+        playerInputs.Player.Ability.performed += AbilityPressed;
         playerInputs.Player.LockOn.started += OnLockOn;
         playerInputs.Player.LockOn.canceled += OffLockOn;
 
         playerInputs.Player.LockOn.Enable();
         playerInputs.Player.Jump.Enable();
+        playerInputs.Player.Ability.Enable();
         MovementAction.Enable();
     }
     void JumpStarted(InputAction.CallbackContext context)
@@ -64,6 +71,29 @@ public class PlayerMovement : MonoBehaviour
     {
         jumpPressed = false;
     }
+    private void AbilityPressed(InputAction.CallbackContext context)
+    {
+        if (canMove)
+        {
+            if (LOIScript.LockedOn != LOstates.Off)
+            {
+                if (Vector3.Dot(horMovement, transform.forward) > 0.8f)
+                {
+                    //teleport or something
+                    return;
+                }
+                else
+                {
+                    if (horMovement != Vector3.zero)
+                    {
+                        Dash(horMovement);
+                        return;
+                    }
+                }
+            }
+            Dash(transform.forward);
+        }
+    }
     void OnLockOn(InputAction.CallbackContext context) { LOIScript.JustLockedOn(); }
     void OffLockOn(InputAction.CallbackContext context) { LOIScript.JustLockedOff(); }
     void OnDisable()
@@ -71,6 +101,7 @@ public class PlayerMovement : MonoBehaviour
         MovementAction.Disable();
         playerInputs.Player.LockOn.Disable();
         playerInputs.Player.Jump.Disable();
+        playerInputs.Player.Ability.Disable();
     }
     void Update()
     {
@@ -80,9 +111,12 @@ public class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        RotatePlayer();
-        MovePlayer();
-        ApplyJumpPhysics();
+        if (canMove)
+        {
+            RotatePlayer();
+            MovePlayer();
+            ApplyJumpPhysics();
+        }
     }
     void GenerateMovement()
     {
@@ -113,7 +147,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (LOIScript.LockedOn == LOstates.On)
         {
-            //RBFreeze(false);
             Quaternion lookRotation = Quaternion.LookRotation((
                 new Vector3(LOIScript.LockedOnEnemy.transform.position.x, transform.position.y, LOIScript.LockedOnEnemy.transform.position.z)
                 - transform.position).normalized);
@@ -123,12 +156,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (horMovement != Vector3.zero)
             {
-                //RBFreeze(false);
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(horMovement), Time.deltaTime * rotationSpeed);
-            }
-            else
-            {
-                //RBFreeze(true);
             }
         }
     }
@@ -159,15 +187,19 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity += Vector3.up * Physics.gravity.y * ascendingWeight * Time.deltaTime;
         }
     }
-    /*void RBFreeze(bool okay)
+    IEnumerator DisableMovement(float f)
     {
-        if (okay)
-        {
-            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-        }
-        else
-        {
-            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.(FreezeRotationZ;
-        }
-    }*/
+        canMove = false;
+        yield return new WaitForSeconds(f);
+        canMove = true;
+    }
+    void Dash(Vector3 direction)
+    {
+        direction *= dashStrength;
+        StartCoroutine(DisableMovement(dashTime));
+        Vector3 velocity = rb.linearVelocity;
+        velocity.x = direction.x;
+        velocity.z = direction.z;
+        rb.linearVelocity = velocity;
+    }
 }
