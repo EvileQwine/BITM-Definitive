@@ -11,35 +11,50 @@ public class PlayerHealthScript : MonoBehaviour
     [SerializeField] float curHealth = 100;
     [SerializeField] float disappearTime  = 5;
 
-    [SerializeField] UnityEngine.UI.Image bar;
-    [SerializeField] UnityEngine.UI.Image overlay;
+    [SerializeField] public GameObject bars;
     
     float showTimeCounter;
+    bool barsOn = true;
 
     LOIndicationScript LOIScript;
+    PlayerAbilities playerAbilities;
 
     void Awake()
     {
-        bar.enabled = true;
+        foreach (Transform child in bars.transform)
+        {
+            child.GetComponent<UnityEngine.UI.Image>().enabled = true;  
+        }
+        playerAbilities = GetComponent<PlayerAbilities>();
+    }
+    void Start()
+    {
         LOIScript = FindFirstObjectByType<LOIndicationScript>();
     }
     void Update()
     {
-        bar.fillAmount = curHealth/maxHealth;
-        if (bar.enabled && LOIScript.LockedOn == LOstates.Off)
+        bars.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().fillAmount = curHealth / maxHealth;
+        bars.transform.GetChild(2).GetComponent<UnityEngine.UI.Image>().fillAmount = playerAbilities.MeterFill();
+        if (barsOn && LOIScript.LockedOn == LOstates.Off)
         {
             showTimeCounter += Time.deltaTime;
         }
         if (showTimeCounter >= disappearTime)
         {
-            bar.enabled = false;
-            overlay.enabled = false;
+            foreach (Transform child in bars.transform)
+            {
+                child.GetComponent<UnityEngine.UI.Image>().enabled = false;
+            }
+            barsOn = false;
         }
     }
-    public void ResetCounter()
+    public void ShowBars()
     {
         showTimeCounter = 0;
-        bar.enabled = true;
-        overlay.enabled = true;
+        foreach (Transform child in bars.transform)
+        {
+            child.GetComponent<UnityEngine.UI.Image>().enabled = true;
+        }
+        barsOn = true;
     } 
 }

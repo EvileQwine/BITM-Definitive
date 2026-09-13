@@ -12,8 +12,11 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        CSScript = FindFirstObjectByType<CameraSystem>();
         ManagerInputs = new ManagerInputs();
+    }
+    void Start()
+    {
+        CSScript = FindFirstObjectByType<CameraSystem>();
     }
     void OnEnable()
     {
@@ -35,6 +38,7 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0f;
             gamePaused = true;
             FindFirstObjectByType<PlayerMovement>().enabled = false;
+            FindFirstObjectByType<PlayerAbilities>().enabled = false;
             CSScript.CameraBlurred(true);
             CSScript.enabled = false;
         }
@@ -43,6 +47,7 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1f;
             gamePaused = false;
             FindFirstObjectByType<PlayerMovement>().enabled = true;
+            FindFirstObjectByType<PlayerAbilities>().enabled = true;
             CSScript.enabled = true;
             CSScript.CameraBlurred(false);
         }

@@ -18,18 +18,16 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float lockOnSpeedReductionMultiplier = 0.7f;
 
-    [SerializeField] float dashStrength = 80f;
-    [SerializeField] float dashTime = 0.2f;
-
     [SerializeField] LayerMask groundLayer;
 
     PlayerInputs playerInputs;
     InputAction MovementAction;
+    PlayerAbilities moveset;
     Rigidbody rb;
 
     LOIndicationScript LOIScript;
 
-    [SerializeField] bool canMove = true;
+    public bool canMove = true;
 
     bool isGrounded = false;
     bool jumpPressed;
@@ -39,9 +37,13 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 horMovement;
     void Awake()
     {
-        playerInputs = new PlayerInputs();    
-        LOIScript = FindFirstObjectByType<LOIndicationScript>();
+        playerInputs = new PlayerInputs();
         rb = GetComponent<Rigidbody>();
+        moveset = GetComponent<PlayerAbilities>();
+    }
+    void Start()
+    {
+        LOIScript = FindFirstObjectByType<LOIndicationScript>();
         raycastDistance = (GetComponent<CapsuleCollider>().height * transform.localScale.y / 2) + 0.2f;
     }
     void OnEnable()
@@ -49,13 +51,11 @@ public class PlayerMovement : MonoBehaviour
         MovementAction = playerInputs.Player.Move;
         playerInputs.Player.Jump.started += JumpStarted;
         playerInputs.Player.Jump.canceled += JumpEnded;
-        playerInputs.Player.Ability.performed += AbilityPressed;
         playerInputs.Player.LockOn.started += OnLockOn;
         playerInputs.Player.LockOn.canceled += OffLockOn;
 
         playerInputs.Player.LockOn.Enable();
         playerInputs.Player.Jump.Enable();
-        playerInputs.Player.Ability.Enable();
         MovementAction.Enable();
     }
     void JumpStarted(InputAction.CallbackContext context)
@@ -71,29 +71,6 @@ public class PlayerMovement : MonoBehaviour
     {
         jumpPressed = false;
     }
-    private void AbilityPressed(InputAction.CallbackContext context)
-    {
-        if (canMove)
-        {
-            if (LOIScript.LockedOn != LOstates.Off)
-            {
-                if (Vector3.Dot(horMovement, transform.forward) > 0.8f)
-                {
-                    //teleport or something
-                    return;
-                }
-                else
-                {
-                    if (horMovement != Vector3.zero)
-                    {
-                        Dash(horMovement);
-                        return;
-                    }
-                }
-            }
-            Dash(transform.forward);
-        }
-    }
     void OnLockOn(InputAction.CallbackContext context) { LOIScript.JustLockedOn(); }
     void OffLockOn(InputAction.CallbackContext context) { LOIScript.JustLockedOff(); }
     void OnDisable()
@@ -101,7 +78,6 @@ public class PlayerMovement : MonoBehaviour
         MovementAction.Disable();
         playerInputs.Player.LockOn.Disable();
         playerInputs.Player.Jump.Disable();
-        playerInputs.Player.Ability.Disable();
     }
     void Update()
     {
@@ -121,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
     void GenerateMovement()
     {
         Vector3 input = MovementAction.ReadValue<Vector2>();
-        horMovement = (Quaternion.Euler(0, -90, 0) * Camera.main.transform.right * input.y + Camera.main.transform.right * input.x).normalized;
+        horMovement = (Quaternion.Euler(0, -90, 0) * Camera.main.transform.right * input.y + Camera.main.transform.right * input.x);
     }
     void CheckGrounded()
     {
@@ -169,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            targetVelocity = horMovement * moveSpeedMulti * lockOnSpeedReductionMultiplier;
+            targetVelocity = lockOnSpeedReductionMultiplier * moveSpeedMulti * horMovement;
         }
         Vector3 velocity = rb.linearVelocity;
         velocity.x = targetVelocity.x;
@@ -180,26 +156,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (rb.linearVelocity.y < 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * fallMultiplier * Time.deltaTime;
+            rb.linearVelocity += fallMultiplier * Physics.gravity.y * Time.deltaTime * Vector3.up;
         } 
         else if (rb.linearVelocity.y > 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * ascendingWeight * Time.deltaTime;
+            rb.linearVelocity += ascendingWeight * Physics.gravity.y * Time.deltaTime * Vector3.up;
         }
     }
-    IEnumerator DisableMovement(float f)
+    public IEnumerator DisableMovement(float f)
     {
         canMove = false;
         yield return new WaitForSeconds(f);
         canMove = true;
-    }
-    void Dash(Vector3 direction)
-    {
-        direction *= dashStrength;
-        StartCoroutine(DisableMovement(dashTime));
-        Vector3 velocity = rb.linearVelocity;
-        velocity.x = direction.x;
-        velocity.z = direction.z;
-        rb.linearVelocity = velocity;
     }
 }

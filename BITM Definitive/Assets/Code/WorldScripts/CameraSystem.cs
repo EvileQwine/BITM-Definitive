@@ -38,9 +38,9 @@ public class CameraSystem : MonoBehaviour
     bool shiftDown = false;
     void Awake()
     {
+        cameraMovement = new CameraMovement();
         targetOffset = followCam.GetComponent<CinemachineFollow>().FollowOffset;
         targetFov = followCam.GetComponent<CinemachineCamera>().Lens.FieldOfView;
-        cameraMovement = new CameraMovement();
     }
     void OnEnable()
     {
