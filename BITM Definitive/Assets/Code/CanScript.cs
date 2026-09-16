@@ -5,7 +5,7 @@ public class CanScript : MonoBehaviour
     [SerializeField] GameObject gasPrefab;
 
     Rigidbody rb;
-    float rd = 8;
+    float rd = 5;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -26,7 +26,6 @@ public class CanScript : MonoBehaviour
             {
                 EnemyScript collided = other.gameObject.GetComponent<EnemyScript>();
                 collided.RemoveHealth(10);
-                collided.Knockback(rb.linearVelocity);
             }
             for (int i = 0; i < 3; i++)
             {

@@ -76,7 +76,8 @@ public class GasScript : MonoBehaviour
     public void Explode()
     {
         col.radius *= 1.5f;
-        GameObject ExplosionParticle = Instantiate(Explosion, transform.position, transform.rotation);
+        GameObject ExplosionParticle = Instantiate(Explosion, transform.position + UnityEngine.Random.insideUnitSphere, transform.rotation);
+        ExplosionParticle.transform.localScale = transform.localScale;
         Destroy(gameObject);
     }
     IEnumerator ShowSelf()
