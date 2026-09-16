@@ -10,7 +10,7 @@ public class EnemyScript : MonoBehaviour
     Collider col;
     Rigidbody rb;
 
-    public bool insideGas = false;
+    bool insideGas = false;
     void Awake()
     {
         col = GetComponent<Collider>();    
