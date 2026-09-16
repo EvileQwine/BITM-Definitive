@@ -46,15 +46,24 @@ public class EnemyScript : MonoBehaviour
     {
         return curHealth / maxHealth;
     }
-    void OnTriggerStay(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("GasCloud") && !insideGas)
+        if (other.gameObject.CompareTag("GasCloud"))
         {
             insideGas = true;
         }
-        else if (other.gameObject.CompareTag("ExplodingGas") && !hitByExplodingGas)
+        if (other.gameObject.CompareTag("Matchstick"))
+        {
+            RemoveHealth(5);
+            Knockback(Vector3.up * 20);
+        }
+    }
+    void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("ExplodingGas") && !hitByExplodingGas)
         {
             hitByExplodingGas = true;
+            insideGas = false;
             curHealth -= 20f;
             Knockback(Vector3.up * 40);
         }
@@ -68,14 +77,6 @@ public class EnemyScript : MonoBehaviour
         if (other.gameObject.CompareTag("ExplodingGas"))
         {
             hitByExplodingGas = false;
-        }
-    }
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Matchstick"))
-        {
-            RemoveHealth(5);
-            Knockback(Vector3.up * 20);
         }
     }
     public void Knockback(Vector3 direction)
