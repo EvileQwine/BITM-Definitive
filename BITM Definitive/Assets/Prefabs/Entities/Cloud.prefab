@@ -128,6 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5820db4e620308f41ae27526ce5f187b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GasScript
+  combineable: 1
+  Explosion: {fileID: 239254530949290359, guid: 1893dd99b540d21479eea46b18423c9c, type: 3}
 --- !u!54 &-6714399945533268282
 Rigidbody:
   m_ObjectHideFlags: 0

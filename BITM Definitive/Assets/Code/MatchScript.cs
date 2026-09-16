@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class MatchScript : MonoBehaviour
@@ -33,6 +34,7 @@ public class MatchScript : MonoBehaviour
                 {
                     es.ShouldExplode();
                 }
+                GetComponent<CinemachineImpulseSource>().GenerateImpulse();
             }
             Destroy(gameObject);
         }

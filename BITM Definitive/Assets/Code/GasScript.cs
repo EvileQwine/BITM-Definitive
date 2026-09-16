@@ -12,6 +12,7 @@ public class GasScript : MonoBehaviour
     float deathTime = 10f;
     bool shrinking = false;
     public bool combineable = true;
+    [SerializeField] GameObject Explosion;
 
     SphereCollider col;
     MeshRenderer mr;
@@ -75,6 +76,7 @@ public class GasScript : MonoBehaviour
     public void Explode()
     {
         col.radius *= 1.5f;
+        GameObject ExplosionParticle = Instantiate(Explosion, transform.position, transform.rotation);
         Destroy(gameObject);
     }
     IEnumerator ShowSelf()
