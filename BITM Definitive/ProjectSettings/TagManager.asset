@@ -6,6 +6,9 @@ TagManager:
   tags:
   - GasCloud
   - DyingEnemy
+  - Matchstick
+  - Enemy
+  - ExplodingGas
   layers:
   - Default
   - TransparentFX

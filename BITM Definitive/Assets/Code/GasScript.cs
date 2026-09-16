@@ -1,11 +1,32 @@
+using System;
+using System.Collections;
+using Unity.Mathematics;
+using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GasScript : MonoBehaviour
 {
     float existanceTimer = 0;
     float deathTime = 10f;
-    public bool shrinking = false;
+    bool shrinking = false;
+    public bool combineable = true;
 
+    SphereCollider col;
+    MeshRenderer mr;
+
+    void Awake()
+    {
+        mr = GetComponent<MeshRenderer>();
+        mr.enabled = false;
+        col = GetComponent<SphereCollider>();    
+    }
+    void Start()
+    {
+        StartCoroutine(ShowSelf());
+        transform.localScale *= UnityEngine.Random.Range(0.8f, 1.2f);
+    }
     void Update()
     {
         if (!shrinking)
@@ -14,13 +35,14 @@ public class GasScript : MonoBehaviour
             if (existanceTimer >= deathTime)
             {
                 shrinking = true;
+                combineable = false;
             }
         }
         else
         {
             if (Time.timeScale != 0)
             {
-                transform.localScale -= new Vector3(0.005f, 0.005f, 0.005f);
+                transform.localScale -= new Vector3(0.01f, 0.005f, 0.01f);
                 if (transform.localScale.x <= 0)
                 {
                     Destroy(gameObject);
@@ -32,12 +54,16 @@ public class GasScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("GasCloud"))
         {
-            if (!shrinking && !other.GetComponent<GasScript>().shrinking)
+            if (combineable && other.gameObject.GetComponent<GasScript>().combineable)
             {
-                if (existanceTimer > other.GetComponent<GasScript>().GetTimer())
+                if (transform.localScale.x > other.gameObject.transform.localScale.x)
                 {
                     transform.localScale += new Vector3(0.2f, 0.1f, 0.2f);
                     existanceTimer = 0;
+                    if (transform.localScale.x >= 4f)
+                    {
+                        combineable = false;
+                    }
                 }
                 else
                 {
@@ -46,8 +72,19 @@ public class GasScript : MonoBehaviour
             }
         }
     }
-    public float GetTimer()
+    public void Explode()
     {
-        return existanceTimer;
+        if (gameObject.CompareTag("ExplodingGas"))
+        {
+            return;
+        }
+        tag = "ExplodingGas";
+        col.radius *= 1.5f;
+        Destroy(gameObject);
+    }
+    IEnumerator ShowSelf()
+    {
+        yield return new WaitForSeconds(0.1f);
+        mr.enabled = true;
     }
 }

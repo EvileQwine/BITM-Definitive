@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerAbilities : MonoBehaviour
 {
     PlayerInputs playerInputs;
-    InputAction Shooting;
     PlayerMovement PMScript;
     PlayerHealthScript PHScript;
     LOIndicationScript LOIScript;
@@ -19,12 +19,15 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] float dashTime = 0.2f;
 
     [SerializeField] float GasShootDistance = 4f;
-    [SerializeField] float shootDelay = 0.3f;
+    [SerializeField] float shootDelay = 0.1f;
 
     [SerializeField] GameObject gasPrefab;
+    [SerializeField] GameObject matchPrefab;
+    [SerializeField] GameObject canPrefab;
 
     bool gainingMeter = true;
     bool canShoot = true;
+    bool isShooting = false;
 
     public float maxPlantMeter = 100;
     public float curPlantMeter = 100;
@@ -47,15 +50,53 @@ public class PlayerAbilities : MonoBehaviour
     void OnEnable()
     {
         playerInputs.Player.Ability.started += AbilityPressed;
-        Shooting = playerInputs.Player.Shoot;
+        playerInputs.Player.Shoot.started += ShootPressed;
+        playerInputs.Player.Shoot.canceled += ShootCancelled;
 
         playerInputs.Player.Ability.Enable();
-        Shooting.Enable();
+        playerInputs.Player.Shoot.Enable();
     }
+    void ShootPressed(InputAction.CallbackContext context)
+    {
+        isShooting = true;
+        if (PMScript.canMove && canShoot)
+        {
+            if (LOIScript.LockedOn != LOstates.Off)
+            {
+                if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f)
+                {
+                    StartCoroutine(PMScript.DisableMovement(0.4f));
+                    StartCoroutine(DisableShoot(shootDelay + 0.8f));
+                    GameObject can = Instantiate(canPrefab, transform.position, transform.rotation);
+                    can.GetComponent<CanScript>().Launch((transform.forward * 20) + (transform.up * 5));
+                    isShooting = false;
+                    return;
+                }
+                else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f)
+                {
+                    StartCoroutine(PMScript.DisableMovement(0.3f));
+                    StartCoroutine(DisableShoot(shootDelay + 0.4f));
+                    GameObject match = Instantiate(matchPrefab, transform.position, transform.rotation);
+                    match.GetComponent<MatchScript>().Launch((transform.forward * 15) + (transform.up * 5));
+                    isShooting = false;
+                    return;
+                }
+            }
+            if (PMScript.horMovement != Vector3.zero)
+            {
+                Instantiate(gasPrefab, transform.position + (PMScript.horMovement * GasShootDistance), UnityEngine.Random.rotation);
+                StartCoroutine(DisableShoot(shootDelay));
+                return;
+            }
+            Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
+            StartCoroutine(DisableShoot(shootDelay));
+        }
+    }
+    void ShootCancelled(InputAction.CallbackContext context) { isShooting = false; }
     void OnDisable()
     {
         playerInputs.Player.Ability.Disable();
-        Shooting.Disable();
+        playerInputs.Player.Shoot.Disable();
     }
     void Update()
     {
@@ -63,7 +104,7 @@ public class PlayerAbilities : MonoBehaviour
         {
             curPlantMeter += Time.deltaTime * meterRegain;
         }
-        if (Shooting.ReadValue<float>() > 0)
+        if (isShooting)
         {
             WhileShooting();
         }
@@ -102,26 +143,14 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (PMScript.canMove && canShoot)
         {
-            StartCoroutine(DisableShoot());
-            if (LOIScript.LockedOn != LOstates.Off)
-            {
-                if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f && curPlantMeter >= 10)
-                {
-                    Debug.Log("ForwardInput");
-                    return;
-                }
-                else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f && curPlantMeter >= 10)
-                {
-                    Debug.Log("BackwardsInput");
-                    return;
-                }
-            }
             if (PMScript.horMovement != Vector3.zero)
             {
                 Instantiate(gasPrefab, transform.position + (PMScript.horMovement * GasShootDistance), UnityEngine.Random.rotation);
+                StartCoroutine(DisableShoot(shootDelay));
                 return;
             }
             Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
+            StartCoroutine(DisableShoot(shootDelay));
         }
     }
     void Dash(Vector3 direction)
@@ -140,10 +169,10 @@ public class PlayerAbilities : MonoBehaviour
         yield return new WaitForSeconds(f);
         gainingMeter = true;
     }
-    IEnumerator DisableShoot()
+    IEnumerator DisableShoot(float f)
     {
         canShoot = false;
-        yield return new WaitForSeconds(shootDelay);
+        yield return new WaitForSeconds(f);
         canShoot = true;
     }
 }

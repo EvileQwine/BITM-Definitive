@@ -28,8 +28,8 @@ public class PlayerMovement : MonoBehaviour
     LOIndicationScript LOIScript;
 
     public bool canMove = true;
+    public bool isGrounded = false;
 
-    bool isGrounded = false;
     bool jumpPressed;
     float jumpHeldTime;
     float raycastDistance;
@@ -166,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
     public IEnumerator DisableMovement(float f)
     {
         canMove = false;
+        rb.linearVelocity = Vector3.zero;
         yield return new WaitForSeconds(f);
         canMove = true;
     }
