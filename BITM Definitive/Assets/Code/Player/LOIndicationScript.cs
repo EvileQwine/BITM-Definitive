@@ -37,6 +37,7 @@ public class LOIndicationScript : MonoBehaviour
     }
     public void JustLockedOn()
     {
+        Player.GetComponent<PlayerHealthScript>().ShowBars();
         if (Player.GetComponent<PlayerMovement>().horMovement != null)
         {
             if (Physics.SphereCast(Player.transform.position, 15, Player.GetComponent<PlayerMovement>().horMovement, out RaycastHit hit, 200))
@@ -57,7 +58,6 @@ public class LOIndicationScript : MonoBehaviour
         if (FindClosest(Player.transform) == null)
         {
             LockedOn = LOstates.None;
-            Player.GetComponent<PlayerHealthScript>().ShowBars();
             return;
         }
         else
@@ -66,7 +66,6 @@ public class LOIndicationScript : MonoBehaviour
         }
         LockedOn = LOstates.On;
         image.enabled = true;
-        Player.GetComponent<PlayerHealthScript>().ShowBars();
     }
     public void JustLockedOff()
     {

@@ -74,11 +74,6 @@ public class GasScript : MonoBehaviour
     }
     public void Explode()
     {
-        if (gameObject.CompareTag("ExplodingGas"))
-        {
-            return;
-        }
-        tag = "ExplodingGas";
         col.radius *= 1.5f;
         Destroy(gameObject);
     }

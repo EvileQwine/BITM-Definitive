@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
@@ -9,8 +10,7 @@ public class EnemyScript : MonoBehaviour
     Collider col;
     Rigidbody rb;
 
-    bool hitByExplodingGas = false;
-    bool insideGas = false;
+    public bool insideGas = false;
     void Awake()
     {
         col = GetComponent<Collider>();    
@@ -57,13 +57,6 @@ public class EnemyScript : MonoBehaviour
         {
             insideGas = true;
         }
-        if (other.gameObject.CompareTag("ExplodingGas") && !hitByExplodingGas)
-        {
-            hitByExplodingGas = true;
-            insideGas = false;
-            curHealth -= 20f;
-            Knockback(Vector3.up * 40);
-        }
     }
     void OnTriggerStay(Collider other)
     {
@@ -75,9 +68,14 @@ public class EnemyScript : MonoBehaviour
         {
             insideGas = false;
         }
-        if (other.gameObject.CompareTag("ExplodingGas"))
+    }
+    public void ShouldExplode()
+    {
+        if (insideGas)
         {
-            hitByExplodingGas = false;
+            insideGas = false;
+            curHealth -= 20f;
+            Knockback(Vector3.up * 40);
         }
     }
     public void Knockback(Vector3 direction)

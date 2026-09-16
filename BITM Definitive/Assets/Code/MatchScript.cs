@@ -28,6 +28,11 @@ public class MatchScript : MonoBehaviour
                 {
                     gas.Explode();
                 }
+                EnemyScript[] enemies = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
+                foreach (EnemyScript es in enemies)
+                {
+                    es.ShouldExplode();
+                }
             }
             Destroy(gameObject);
         }
