@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
@@ -31,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isGrounded = false;
 
     bool jumpPressed;
+    bool jumpAsap = false;
+    bool checkingGrounded = true;
     float jumpHeldTime;
     float raycastDistance;
 
@@ -60,12 +63,22 @@ public class PlayerMovement : MonoBehaviour
     }
     void JumpStarted(InputAction.CallbackContext context)
     {
-        jumpHeldTime = 0f;
-        jumpPressed = true;
         if (isGrounded)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+            Jump();
         }
+        else
+        {
+            StartCoroutine(StallJump());
+        }
+    }
+    void Jump()
+    {
+        jumpHeldTime = 0f;
+        jumpPressed = true;
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+        isGrounded = false;
+        StartCoroutine(DontCheckGrounded());
     }
     void JumpEnded(InputAction.CallbackContext context)
     {
@@ -82,8 +95,11 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         GenerateMovement();
-        CheckGrounded();
         CalculateJumpStuff();
+        if (checkingGrounded)
+        {
+            CheckGrounded();
+        }
     }
     void FixedUpdate()
     {
@@ -102,7 +118,19 @@ public class PlayerMovement : MonoBehaviour
     void CheckGrounded()
     {
         Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
-        isGrounded = Physics.Raycast(rayOrigin, Vector3.down, raycastDistance, groundLayer);
+        if (!Physics.Raycast(rayOrigin, Vector3.down, raycastDistance, groundLayer))
+        {
+            StartCoroutine(CoyoteTime());
+            StartCoroutine(DontCheckGrounded());
+        }
+        else
+        {
+            isGrounded = true;
+            if (jumpAsap)
+            {
+                Jump();
+            }
+        }
     }
     void CalculateJumpStuff()
     {
@@ -169,5 +197,22 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         yield return new WaitForSeconds(f);
         canMove = true;
+    }
+    IEnumerator CoyoteTime()
+    {
+        yield return new WaitForSeconds(0.2f);
+        isGrounded = false;
+    }
+    IEnumerator DontCheckGrounded()
+    {
+        checkingGrounded = false;
+        yield return new WaitForSeconds(0.1f);
+        checkingGrounded = true;
+    }
+    IEnumerator StallJump()
+    {
+        jumpAsap = true;
+        yield return new WaitForSeconds(0.2f);
+        jumpAsap = false;
     }
 }

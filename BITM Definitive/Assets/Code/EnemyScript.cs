@@ -6,7 +6,13 @@ public class EnemyScript : MonoBehaviour
 {
     public float maxHealth;
     public float curHealth;
-    [SerializeField] bool canDie = true;
+    public bool canDie = true;
+    public int comboCount = 0;
+    public bool isGrounded;
+
+    [SerializeField] LayerMask groundLayer;
+
+    float raycastDistance;
 
     Collider col;
     Rigidbody rb;
@@ -17,11 +23,22 @@ public class EnemyScript : MonoBehaviour
         col = GetComponent<Collider>();    
         rb = GetComponent<Rigidbody>();
     }
+    void Start()
+    {
+        raycastDistance = (GetComponent<BoxCollider>().size.y * transform.localScale.y / 2) + 0.1f;
+    }
     void Update()
     {
-        if (curHealth <= 0)
+        if (curHealth <= 0 && canDie)
         {
             FindFirstObjectByType<LOIndicationScript>().UpdateLockOn(gameObject);
+        }
+
+        Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
+        isGrounded = Physics.Raycast(rayOrigin, Vector3.down, raycastDistance, groundLayer);
+        if (isGrounded && rb.linearVelocity.y < 0)
+        {
+            comboCount = 0;
         }
     }
     private void FixedUpdate()
@@ -36,18 +53,19 @@ public class EnemyScript : MonoBehaviour
         }
         if (insideGas)
         {
-            curHealth -= 0.1f;
+            RemoveHealth(0.1f);
         }
     }
     public void RemoveHealth(float f)
     {
-        if (canDie)
-        {
-            curHealth -= f;
-        }
+        curHealth -= f;
     }
     public float HealthPercent()
     {
+        if (!canDie)
+        {
+            return 1;
+        }
         return curHealth / maxHealth;
     }
     void OnTriggerEnter(Collider other)
@@ -89,5 +107,6 @@ public class EnemyScript : MonoBehaviour
         velocity.y = direction.y;
         velocity.z = direction.z;
         rb.linearVelocity = velocity;
+        comboCount++;
     }
 }

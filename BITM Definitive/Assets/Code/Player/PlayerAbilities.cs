@@ -135,9 +135,8 @@ public class PlayerAbilities : MonoBehaviour
                     isShooting = false;
                     return;
                 }
-            }
-            if (!canShoot)
-            {
+                Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
+                StartCoroutine(DisableShoot(shootDelay));
                 return;
             }
             if (PMScript.horMovement != Vector3.zero)
@@ -155,6 +154,12 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (PMScript.canMove && canShoot)
         {
+            if (LOIScript.LockedOn != LOstates.Off)
+            {
+                Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
+                StartCoroutine(DisableShoot(shootDelay));
+                return;
+            }
             if (PMScript.horMovement != Vector3.zero)
             {
                 Instantiate(gasPrefab, transform.position + (PMScript.horMovement * GasShootDistance), UnityEngine.Random.rotation);
