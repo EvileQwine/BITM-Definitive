@@ -19,7 +19,7 @@ public class FPSScript : MonoBehaviour
     }
     void FixedUpdate()
     {
-        fpsF = 1f / Time.deltaTime;
+        fpsF = 1f / Time.fixedDeltaTime;
         textMesh.text = $"{(int)fpsU}fpsU \n {(int)fpsF}fpsF";
     }
 }

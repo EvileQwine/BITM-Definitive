@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CanScript : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class CanScript : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 Vector3 position = new Vector3(transform.position.x + Random.Range(-rd, rd), transform.position.y, transform.position.z + Random.Range(-rd, rd));
-                GameObject gas = Instantiate(gasPrefab, position, transform.rotation);
+                GameObject gas = Instantiate(gasPrefab, position, Random.rotation);
                 gas.GetComponent<GasScript>().combineable = false;
                 gas.transform.localScale *= Random.Range(0.75f, 2f);
             }

@@ -136,6 +136,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchRanged"",
+                    ""type"": ""Button"",
+                    ""id"": ""4be33207-324a-4db5-89db-fa8f66f7265c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -292,6 +301,28 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""720f881a-3a3b-4b0f-9d67-8ebac5adf2a0"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchRanged"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4bc3a3da-6ca8-4738-b7a0-5d89f0eac60e"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchRanged"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -305,6 +336,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Ability = m_Player.FindAction("Ability", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+        m_Player_SwitchRanged = m_Player.FindAction("SwitchRanged", throwIfNotFound: true);
     }
 
     ~@PlayerInputs()
@@ -390,6 +422,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Ability;
     private readonly InputAction m_Player_Shoot;
+    private readonly InputAction m_Player_SwitchRanged;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -421,6 +454,10 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Shoot".
         /// </summary>
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SwitchRanged".
+        /// </summary>
+        public InputAction @SwitchRanged => m_Wrapper.m_Player_SwitchRanged;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -462,6 +499,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @SwitchRanged.started += instance.OnSwitchRanged;
+            @SwitchRanged.performed += instance.OnSwitchRanged;
+            @SwitchRanged.canceled += instance.OnSwitchRanged;
         }
 
         /// <summary>
@@ -488,6 +528,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @SwitchRanged.started -= instance.OnSwitchRanged;
+            @SwitchRanged.performed -= instance.OnSwitchRanged;
+            @SwitchRanged.canceled -= instance.OnSwitchRanged;
         }
 
         /// <summary>
@@ -563,5 +606,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShoot(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SwitchRanged" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwitchRanged(InputAction.CallbackContext context);
     }
 }

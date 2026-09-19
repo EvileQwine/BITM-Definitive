@@ -11,7 +11,8 @@ public class PlayerHealthScript : MonoBehaviour
     [SerializeField] float curHealth = 100;
     [SerializeField] float disappearTime  = 5;
 
-    [SerializeField] public GameObject bars;
+    [SerializeField] GameObject bars;
+    [SerializeField] GameObject ranged;
     
     float showTimeCounter;
     bool barsOn = true;
@@ -57,4 +58,8 @@ public class PlayerHealthScript : MonoBehaviour
         }
         barsOn = true;
     } 
+    public void SwapRanged()
+    {
+        ranged.GetComponent<SelectedRangedIcon>().SwitchRangedIcon();
+    }
 }

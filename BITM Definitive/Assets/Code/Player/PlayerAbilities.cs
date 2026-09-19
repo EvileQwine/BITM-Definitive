@@ -52,51 +52,17 @@ public class PlayerAbilities : MonoBehaviour
         playerInputs.Player.Ability.started += AbilityPressed;
         playerInputs.Player.Shoot.started += ShootPressed;
         playerInputs.Player.Shoot.canceled += ShootCancelled;
+        playerInputs.Player.SwitchRanged.performed += SwitchedRanged;
 
         playerInputs.Player.Ability.Enable();
         playerInputs.Player.Shoot.Enable();
+        playerInputs.Player.SwitchRanged.Enable();
     }
-    void ShootPressed(InputAction.CallbackContext context)
-    {
-        isShooting = true;
-        if (PMScript.canMove && canShoot)
-        {
-            if (LOIScript.LockedOn != LOstates.Off)
-            {
-                if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f)
-                {
-                    StartCoroutine(PMScript.DisableMovement(0.4f));
-                    StartCoroutine(DisableShoot(shootDelay + 0.8f));
-                    GameObject can = Instantiate(canPrefab, transform.position, transform.rotation);
-                    can.GetComponent<CanScript>().Launch((transform.forward * 20) + (transform.up * 5));
-                    isShooting = false;
-                    return;
-                }
-                else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f)
-                {
-                    StartCoroutine(PMScript.DisableMovement(0.3f));
-                    StartCoroutine(DisableShoot(shootDelay + 0.4f));
-                    GameObject match = Instantiate(matchPrefab, transform.position, transform.rotation);
-                    match.GetComponent<MatchScript>().Launch((transform.forward * 15) + (transform.up * 5));
-                    isShooting = false;
-                    return;
-                }
-            }
-            if (PMScript.horMovement != Vector3.zero)
-            {
-                Instantiate(gasPrefab, transform.position + (PMScript.horMovement * GasShootDistance), UnityEngine.Random.rotation);
-                StartCoroutine(DisableShoot(shootDelay));
-                return;
-            }
-            Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
-            StartCoroutine(DisableShoot(shootDelay));
-        }
-    }
-    void ShootCancelled(InputAction.CallbackContext context) { isShooting = false; }
     void OnDisable()
     {
         playerInputs.Player.Ability.Disable();
         playerInputs.Player.Shoot.Disable();
+        playerInputs.Player.SwitchRanged.Disable();
     }
     void Update()
     {
@@ -108,6 +74,11 @@ public class PlayerAbilities : MonoBehaviour
         {
             WhileShooting();
         }
+    }
+    void SwitchedRanged(InputAction.CallbackContext context)
+    {
+        PHScript.SwapRanged();
+        PHScript.ShowBars();
     }
     void AbilityPressed(InputAction.CallbackContext context)
     {
@@ -139,6 +110,47 @@ public class PlayerAbilities : MonoBehaviour
             curPlantMeter -= 5;
         }
     }
+    void ShootPressed(InputAction.CallbackContext context)
+    {
+        isShooting = true;
+        if (PMScript.canMove)
+        {
+            if (LOIScript.LockedOn != LOstates.Off)
+            {
+                if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f && canShoot)
+                {
+                    StartCoroutine(PMScript.DisableMovement(0.4f));
+                    StartCoroutine(DisableShoot(shootDelay + 0.8f));
+                    GameObject can = Instantiate(canPrefab, transform.position, transform.rotation);
+                    can.GetComponent<CanScript>().Launch((transform.forward * 20) + (transform.up * 5));
+                    isShooting = false;
+                    return;
+                }
+                else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f)
+                {
+                    StartCoroutine(PMScript.DisableMovement(0.3f));
+                    StartCoroutine(DisableShoot(shootDelay + 0.4f));
+                    GameObject match = Instantiate(matchPrefab, transform.position, transform.rotation);
+                    match.GetComponent<MatchScript>().Launch((transform.forward * 15) + (transform.up * 5));
+                    isShooting = false;
+                    return;
+                }
+            }
+            if (!canShoot)
+            {
+                return;
+            }
+            if (PMScript.horMovement != Vector3.zero)
+            {
+                Instantiate(gasPrefab, transform.position + (PMScript.horMovement * GasShootDistance), UnityEngine.Random.rotation);
+                StartCoroutine(DisableShoot(shootDelay));
+                return;
+            }
+            Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
+            StartCoroutine(DisableShoot(shootDelay));
+        }
+    }
+    void ShootCancelled(InputAction.CallbackContext context) { isShooting = false; }
     void WhileShooting()
     {
         if (PMScript.canMove && canShoot)

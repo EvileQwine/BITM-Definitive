@@ -50,6 +50,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchRanged",
+                    "type": "Button",
+                    "id": "4be33207-324a-4db5-89db-fa8f66f7265c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -204,6 +213,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "720f881a-3a3b-4b0f-9d67-8ebac5adf2a0",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchRanged",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4bc3a3da-6ca8-4738-b7a0-5d89f0eac60e",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchRanged",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
