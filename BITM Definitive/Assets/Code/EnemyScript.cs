@@ -6,6 +6,7 @@ public class EnemyScript : MonoBehaviour
 {
     public float maxHealth;
     public float curHealth;
+    [SerializeField] bool canDie = true;
 
     Collider col;
     Rigidbody rb;
@@ -40,7 +41,10 @@ public class EnemyScript : MonoBehaviour
     }
     public void RemoveHealth(float f)
     {
-        curHealth -= f;
+        if (canDie)
+        {
+            curHealth -= f;
+        }
     }
     public float HealthPercent()
     {
@@ -74,7 +78,7 @@ public class EnemyScript : MonoBehaviour
         if (insideGas)
         {
             insideGas = false;
-            curHealth -= 20f;
+            RemoveHealth(20);
             Knockback(Vector3.up * 40);
         }
     }
