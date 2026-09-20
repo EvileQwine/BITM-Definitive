@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
 
     float raycastDistance;
+    bool justExploded = false;
 
     Collider col;
     Rigidbody rb;
@@ -75,7 +77,7 @@ public class EnemyScript : MonoBehaviour
             RemoveHealth(5);
             Knockback(Vector3.up * 20);
         }
-        if (other.gameObject.CompareTag("GasCloud") && !insideGas)
+        if (other.gameObject.CompareTag("GasCloud") && !justExploded)
         {
             insideGas = true;
         }
@@ -93,12 +95,18 @@ public class EnemyScript : MonoBehaviour
     }
     public void ShouldExplode()
     {
-        if (insideGas)
+        if (insideGas && !justExploded)
         {
             insideGas = false;
             RemoveHealth(20);
             Knockback(Vector3.up * 40);
         }
+    }
+    IEnumerator NoGas()
+    {
+        justExploded = true;
+        yield return new WaitForSeconds(0.2f);
+        justExploded = false;
     }
     public void Knockback(Vector3 direction)
     {
