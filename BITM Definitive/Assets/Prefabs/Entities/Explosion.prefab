@@ -4907,4 +4907,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26a27d125f391de4bb2c2d75b8cbcec2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeleteSelf
-  deleteCounter: 1
+  deleteCounter: 1000
