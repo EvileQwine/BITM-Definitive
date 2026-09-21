@@ -37,6 +37,7 @@ public class GasScript : MonoBehaviour
             {
                 shrinking = true;
                 combineable = false;
+                GetComponent<SphereCollider>().center = Camera.main.transform.up * - 300;
             }
         }
         else

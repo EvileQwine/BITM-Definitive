@@ -100,6 +100,7 @@ public class EnemyScript : MonoBehaviour
             insideGas = false;
             RemoveHealth(20);
             Knockback(Vector3.up * 40);
+            StartCoroutine(NoGas());
         }
     }
     IEnumerator NoGas()
