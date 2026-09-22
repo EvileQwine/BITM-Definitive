@@ -4,7 +4,6 @@ using UnityEngine.UIElements;
 public class CanScript : MonoBehaviour
 {
     [SerializeField] GameObject gasPrefab;
-    public GameObject Player;
 
     Rigidbody rb;
     float rd = 5;
@@ -19,6 +18,7 @@ public class CanScript : MonoBehaviour
         velocity.y = direction.y;
         velocity.z = direction.z;
         rb.linearVelocity = velocity;
+        rb.angularVelocity = new Vector3(0, 0, -25);
     }
     void OnTriggerEnter(Collider other)
     {
@@ -34,10 +34,6 @@ public class CanScript : MonoBehaviour
                 Vector3 position = new Vector3(transform.position.x + Random.Range(-rd, rd), transform.position.y, transform.position.z + Random.Range(-rd, rd));
                 MakeGas(position);
             }
-            Vector3 direction = (Player.transform.position - transform.position).normalized;
-            direction.y = transform.position.y;
-            MakeGas(direction * 6);
-            Destroy(gameObject);
         }
     }
     void MakeGas(Vector3 position)

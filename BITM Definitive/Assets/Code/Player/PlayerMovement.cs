@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     LOIndicationScript LOIScript;
 
     public bool canMove = true;
+    public bool canAttack = true;
     public bool isGrounded = false;
 
     bool jumpPressed;
@@ -63,17 +64,21 @@ public class PlayerMovement : MonoBehaviour
     }
     void JumpStarted(InputAction.CallbackContext context)
     {
-        if (isGrounded)
+        if (canAttack && canMove)
         {
-            Jump();
-        }
-        else
-        {
-            StartCoroutine(StallJump());
+            if (isGrounded)
+            {
+                Jump();
+            }
+            else
+            {
+                StartCoroutine(StallJump());
+            }
         }
     }
     void Jump()
     {
+        canAttack = true;
         jumpHeldTime = 0f;
         jumpPressed = true;
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
@@ -107,8 +112,8 @@ public class PlayerMovement : MonoBehaviour
         {
             RotatePlayer();
             MovePlayer();
-            ApplyJumpPhysics();
         }
+        ApplyJumpPhysics();
     }
     void GenerateMovement()
     {
@@ -197,6 +202,12 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         yield return new WaitForSeconds(f);
         canMove = true;
+    }
+    public IEnumerator DisableAttacks(float f)
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(f);
+        canAttack = true;
     }
     IEnumerator CoyoteTime()
     {

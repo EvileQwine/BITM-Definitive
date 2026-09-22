@@ -5,6 +5,11 @@ using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum RangedEquipped
+{
+    Axes,
+    Gas,
+}
 public class PlayerAbilities : MonoBehaviour
 {
     PlayerInputs playerInputs;
@@ -24,10 +29,13 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] GameObject gasPrefab;
     [SerializeField] GameObject matchPrefab;
     [SerializeField] GameObject canPrefab;
+    [SerializeField] GameObject axePrefab;
 
     bool gainingMeter = true;
     bool canShoot = true;
     bool isShooting = false;
+
+    public RangedEquipped rEquipped = RangedEquipped.Gas;
 
     public float maxPlantMeter = 100;
     public float curPlantMeter = 100;
@@ -79,6 +87,12 @@ public class PlayerAbilities : MonoBehaviour
     {
         PHScript.SwapRanged();
         PHScript.ShowBars();
+        if (rEquipped == RangedEquipped.Axes)
+        {
+            rEquipped = RangedEquipped.Gas;
+            return;
+        }
+        rEquipped = RangedEquipped.Axes;
     }
     void AbilityPressed(InputAction.CallbackContext context)
     {
@@ -112,24 +126,36 @@ public class PlayerAbilities : MonoBehaviour
     }
     void ShootPressed(InputAction.CallbackContext context)
     {
+        if (rEquipped == RangedEquipped.Gas)
+        {
+            ShootGas();
+        }
+        else
+        {
+            ThrowAxes();
+        }
+    }
+    void ShootGas()
+    {
         isShooting = true;
-        if (PMScript.canMove)
+        if (PMScript.canMove && PMScript.canAttack && canShoot)
         {
             if (LOIScript.LockedOn != LOstates.Off)
             {
                 if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f && canShoot)
                 {
-                    StartCoroutine(PMScript.DisableMovement(0.4f));
-                    StartCoroutine(DisableShoot(shootDelay + 0.8f));
+                    StartCoroutine(PMScript.DisableAttacks(0.4f));
+                    StartCoroutine(PMScript.DisableMovement(0.2f));
+                    StartCoroutine(DisableShoot(shootDelay + 0.2f));
                     GameObject can = Instantiate(canPrefab, transform.position, transform.rotation);
                     can.GetComponent<CanScript>().Launch((transform.forward * 20) + (transform.up * 5));
-                    can.GetComponent<CanScript>().Player = gameObject;
                     isShooting = false;
                     return;
                 }
                 else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f)
                 {
-                    StartCoroutine(PMScript.DisableMovement(0.3f));
+                    StartCoroutine(PMScript.DisableAttacks(0.3f));
+                    StartCoroutine(PMScript.DisableMovement(0.2f));
                     StartCoroutine(DisableShoot(shootDelay + 0.4f));
                     GameObject match = Instantiate(matchPrefab, transform.position, transform.rotation);
                     match.GetComponent<MatchScript>().Launch((transform.forward * 15) + (transform.up * 5));
@@ -148,9 +174,51 @@ public class PlayerAbilities : MonoBehaviour
         }
     }
     void ShootCancelled(InputAction.CallbackContext context) { isShooting = false; }
+    void ThrowAxes()
+    {
+        if (PMScript.canMove && PMScript.canAttack && canShoot)
+        {
+            if (LOIScript.LockedOn == LOstates.On)
+            {
+                if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f && canShoot)
+                {
+                    //forward
+                    return;
+                }
+                else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f)
+                {
+                    //backward
+                    return;
+                }
+                //direction based
+                return;
+            }
+            else if (LOIScript.LockedOn == LOstates.None)
+            {
+                //don't use enemy position
+                if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f && canShoot)
+                {
+                    //forward
+                    return;
+                }
+                else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f)
+                {
+                    //backward
+                    return;
+                }
+                return;
+            }
+            StartCoroutine(PMScript.DisableAttacks(0.3f));
+            StartCoroutine(PMScript.DisableMovement(0.2f));
+            StartCoroutine(DisableShoot(shootDelay + 0.3f));
+            GameObject axe = Instantiate(axePrefab, transform.position, transform.rotation);
+            axe.GetComponent<ThrownHatchet>().player = gameObject;
+            //axe.GetComponent<ThrownHatchet>().FrontSpin(LOIScript.FindClosest(gameObject.transform).transform.position );
+        }
+    }
     void WhileShooting()
     {
-        if (PMScript.canMove && canShoot)
+        if (PMScript.canMove && PMScript.canAttack && canShoot && rEquipped == RangedEquipped.Gas)
         {
             if (LOIScript.LockedOn != LOstates.Off)
             {
