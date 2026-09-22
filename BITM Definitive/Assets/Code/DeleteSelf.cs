@@ -22,5 +22,6 @@ public class DeleteSelf : MonoBehaviour
         yield return new WaitForSeconds(deleteCounter);
         p.Clear();
         Destroy(gameObject);
+        p.Clear();
     }
 }
