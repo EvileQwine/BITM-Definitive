@@ -8,7 +8,7 @@ public class EnemyScript : MonoBehaviour
     public float maxHealth;
     public float curHealth;
     public bool canDie = true;
-    public int comboCount = 0;
+    public float comboCount = 0;
     public bool isGrounded;
 
     [SerializeField] LayerMask groundLayer;
@@ -55,11 +55,15 @@ public class EnemyScript : MonoBehaviour
         }
         if (insideGas)
         {
-            RemoveHealth(0.1f);
+            RemoveHealth(0.1f, 0);
         }
     }
-    public void RemoveHealth(float f)
+    public void RemoveHealth(float f, float combo)
     {
+        if (combo != 0)
+        {
+            comboCount += combo;
+        }
         curHealth -= f;
     }
     public float HealthPercent()
@@ -74,7 +78,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Matchstick"))
         {
-            RemoveHealth(5);
+            RemoveHealth(5, 1);
             Knockback(Vector3.up * 20);
         }
         if (other.gameObject.CompareTag("GasCloud") && !justExploded)
@@ -98,7 +102,7 @@ public class EnemyScript : MonoBehaviour
         if (insideGas && !justExploded)
         {
             insideGas = false;
-            RemoveHealth(20);
+            RemoveHealth(20, 1);
             Knockback(Vector3.up * 40);
             StartCoroutine(NoGas());
         }
@@ -116,6 +120,5 @@ public class EnemyScript : MonoBehaviour
         velocity.y = direction.y;
         velocity.z = direction.z;
         rb.linearVelocity = velocity;
-        comboCount++;
     }
 }

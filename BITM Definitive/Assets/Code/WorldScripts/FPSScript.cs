@@ -10,12 +10,13 @@ public class FPSScript : MonoBehaviour
 
     float fpsU;
     List<int> fpss = new();
-    int averageFps = 6967;
+    int averageFps;
 
     void Awake()
     {
         textMesh = GetComponent<TextMeshProUGUI>();
-        StartCoroutine(OneSecond());
+        StartCoroutine(FPSReading());
+        averageFps = (int)(1/Time.deltaTime);
     }
 
     void Update()
@@ -26,16 +27,16 @@ public class FPSScript : MonoBehaviour
     {
         textMesh.text = $"{averageFps}fps";
     }
-    IEnumerator OneSecond()
+    IEnumerator FPSReading()
     {
         fpss.Clear();
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.4f);
         int p = 0;
         for (int i = 0; i < fpss.Count; i++)
         {
             p += fpss[i];
         }
         averageFps = p/fpss.Count;
-        StartCoroutine(OneSecond());
+        StartCoroutine(FPSReading());
     }
 }

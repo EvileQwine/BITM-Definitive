@@ -123,6 +123,7 @@ public class PlayerAbilities : MonoBehaviour
                     StartCoroutine(DisableShoot(shootDelay + 0.8f));
                     GameObject can = Instantiate(canPrefab, transform.position, transform.rotation);
                     can.GetComponent<CanScript>().Launch((transform.forward * 20) + (transform.up * 5));
+                    can.GetComponent<CanScript>().Player = gameObject;
                     isShooting = false;
                     return;
                 }
@@ -135,18 +136,15 @@ public class PlayerAbilities : MonoBehaviour
                     isShooting = false;
                     return;
                 }
-                Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
-                StartCoroutine(DisableShoot(shootDelay));
+                CreateGasCloud(transform.forward.normalized);
                 return;
             }
             if (PMScript.horMovement != Vector3.zero)
             {
-                Instantiate(gasPrefab, transform.position + (PMScript.horMovement * GasShootDistance), UnityEngine.Random.rotation);
-                StartCoroutine(DisableShoot(shootDelay));
+                CreateGasCloud(PMScript.horMovement);
                 return;
             }
-            Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
-            StartCoroutine(DisableShoot(shootDelay));
+            CreateGasCloud(transform.forward.normalized);
         }
     }
     void ShootCancelled(InputAction.CallbackContext context) { isShooting = false; }
@@ -156,19 +154,24 @@ public class PlayerAbilities : MonoBehaviour
         {
             if (LOIScript.LockedOn != LOstates.Off)
             {
-                Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
-                StartCoroutine(DisableShoot(shootDelay));
-                return;
+                if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f) { return; }
+                else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f) { return; }
             }
             if (PMScript.horMovement != Vector3.zero)
             {
-                Instantiate(gasPrefab, transform.position + (PMScript.horMovement * GasShootDistance), UnityEngine.Random.rotation);
-                StartCoroutine(DisableShoot(shootDelay));
+                CreateGasCloud(PMScript.horMovement);
                 return;
             }
-            Instantiate(gasPrefab, transform.position + (transform.forward.normalized * GasShootDistance), UnityEngine.Random.rotation);
-            StartCoroutine(DisableShoot(shootDelay));
+            CreateGasCloud(transform.forward.normalized);
         }
+    }
+    void CreateGasCloud(Vector3 direction)
+    {
+        Quaternion q = UnityEngine.Random.rotation;
+        q.x = 0;
+        q.z = 0;
+        Instantiate(gasPrefab, transform.position + (direction * GasShootDistance), q);
+        StartCoroutine(DisableShoot(shootDelay));
     }
     void Dash(Vector3 direction)
     {

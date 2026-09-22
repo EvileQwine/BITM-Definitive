@@ -14,14 +14,14 @@ public class GasScript : MonoBehaviour
     public bool combineable = true;
     [SerializeField] GameObject Explosion;
 
-    SphereCollider col;
+    CapsuleCollider col;
     MeshRenderer mr;
 
     void Awake()
     {
         mr = GetComponent<MeshRenderer>();
         mr.enabled = false;
-        col = GetComponent<SphereCollider>();    
+        col = GetComponent<CapsuleCollider>();    
     }
     void Start()
     {
@@ -37,7 +37,7 @@ public class GasScript : MonoBehaviour
             {
                 shrinking = true;
                 combineable = false;
-                GetComponent<SphereCollider>().center = Camera.main.transform.up * - 300;
+                GetComponent<CapsuleCollider>().center = Camera.main.transform.up * - 300;
             }
         }
         else
