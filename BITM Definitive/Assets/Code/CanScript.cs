@@ -18,7 +18,6 @@ public class CanScript : MonoBehaviour
         velocity.y = direction.y;
         velocity.z = direction.z;
         rb.linearVelocity = velocity;
-        rb.angularVelocity = new Vector3(0, 0, -25);
     }
     void OnTriggerEnter(Collider other)
     {
@@ -44,5 +43,6 @@ public class CanScript : MonoBehaviour
         GameObject gas = Instantiate(gasPrefab, position, q);
         gas.GetComponent<GasScript>().combineable = false;
         gas.transform.localScale *= Random.Range(0.75f, 2f);
+        Destroy(gameObject);
     }
 }

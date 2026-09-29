@@ -10,16 +10,15 @@ public class CameraSystem : MonoBehaviour
 
     [SerializeField] bool UnlockedCamera = false;
 
-    [SerializeField] float cameraDistance = 25f;
+    [SerializeField] float cameraDistance = 30f;
 
     [SerializeField] int moveSpeed = 20;
     [SerializeField] int rotateSpeed = 100;
     [SerializeField] int zoomSpeed = 1000;
     [SerializeField] int edgeScroll = 20;
     [SerializeField] float dragSpeed = 2f;
-    [SerializeField] float RightDragSpeed = 2f;
-    [SerializeField] float downRotateSpeed = 3f;
-
+    [SerializeField] float rightDragSpeed = 2f;
+    [SerializeField] float verticalRotateSpeed = 3f;
     [SerializeField] int[] YConstraints = new int[2] { 0, 20 };
 
     [SerializeField] bool useEdgeScrolling = false;
@@ -34,6 +33,7 @@ public class CameraSystem : MonoBehaviour
     Vector2 lastMousePos = Vector2.zero;
     Vector3 targetOffset;
     float targetFov;
+    float rotationValue;
     bool middleMouseDown = false;
     bool rightMouseDown = false;
     bool shiftDown = false;
@@ -74,6 +74,10 @@ public class CameraSystem : MonoBehaviour
             transform.position = Player.transform.position;
             ArrowRotation();
         }
+    }
+    void FixedUpdate()
+    {
+        ApplyMovement();
     }
     void EdgeScrolling()
     {
@@ -155,13 +159,13 @@ public class CameraSystem : MonoBehaviour
         {
             Vector2 mouseMovement = (Vector2)Input.mousePosition - lastMousePos;
             rotateInput = mouseMovement.x;
-            targetOffset.y += mouseMovement.y / -RightDragSpeed;
+            targetOffset.y += mouseMovement.y / -rightDragSpeed;
             lastMousePos = Input.mousePosition;
             if (targetOffset.y != 0)
             {
                 targetOffset.y = Mathf.Clamp(targetOffset.y, YConstraints[0], YConstraints[1]);
                 followCam.GetComponent<CinemachineFollow>().FollowOffset =
-                    Vector3.Lerp(followCam.GetComponent<CinemachineFollow>().FollowOffset, targetOffset, Time.deltaTime * downRotateSpeed);
+                    Vector3.Lerp(followCam.GetComponent<CinemachineFollow>().FollowOffset, targetOffset, Time.deltaTime * verticalRotateSpeed);
             }
             transform.eulerAngles += new Vector3(0, rotateInput * Time.deltaTime * rotateSpeed, 0);
         }
@@ -169,15 +173,20 @@ public class CameraSystem : MonoBehaviour
     void ArrowRotation()
     {
         Vector3 input = movementAction.ReadValue<Vector2>();
-        targetOffset.y -= input.y / -RightDragSpeed;
+        rotationValue = input.x;
+        targetOffset.y += input.y;
+    }
+    void ApplyMovement()
+    {
+        transform.eulerAngles += new Vector3(0, rotationValue * Time.deltaTime * rotateSpeed, 0);
         if (targetOffset.y != 0)
         {
-            targetOffset.y = Mathf.Clamp(targetOffset.y, YConstraints[0], YConstraints[1]);
-            followCam.GetComponent<CinemachineFollow>().FollowOffset =
-                Vector3.Lerp(followCam.GetComponent<CinemachineFollow>().FollowOffset, targetOffset, Time.deltaTime * downRotateSpeed);
-            followCam.GetComponent<CinemachineFollow>().FollowOffset.z = followCam.GetComponent<CinemachineFollow>().FollowOffset.y - cameraDistance;
+            targetOffset.y = System.Math.Clamp(targetOffset.y, 0, cameraDistance);
+            float fy = followCam.GetComponent<CinemachineFollow>().FollowOffset.y;
+            fy = Mathf.Lerp(fy, targetOffset.y, Time.deltaTime * verticalRotateSpeed);
+            float fz = (float)System.Math.Sqrt(System.Math.Pow(cameraDistance, 2) - System.Math.Pow(fy, 2));
+            followCam.GetComponent<CinemachineFollow>().FollowOffset = new Vector3(0, fy, fz);
         }
-        transform.eulerAngles += new Vector3(0, input.x * Time.deltaTime * rotateSpeed, 0);
     }
     public void CameraBlurred(bool okay)
     {

@@ -38,7 +38,7 @@ public class EnemyScript : MonoBehaviour
 
         Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
         isGrounded = Physics.Raycast(rayOrigin, Vector3.down, raycastDistance, groundLayer);
-        if (isGrounded && rb.linearVelocity.y < 0)
+        if (isGrounded && rb.linearVelocity.y == 0)
         {
             comboCount = 0;
         }

@@ -34,6 +34,7 @@ public class PlayerAbilities : MonoBehaviour
     bool gainingMeter = true;
     bool canShoot = true;
     bool isShooting = false;
+    public int axeCount = 3;
 
     public RangedEquipped rEquipped = RangedEquipped.Gas;
 
@@ -138,7 +139,7 @@ public class PlayerAbilities : MonoBehaviour
     void ShootGas()
     {
         isShooting = true;
-        if (PMScript.canMove && PMScript.canAttack && canShoot)
+        if (PMScript.canMove && PMScript.canAttack)
         {
             if (LOIScript.LockedOn != LOstates.Off)
             {
@@ -146,7 +147,6 @@ public class PlayerAbilities : MonoBehaviour
                 {
                     StartCoroutine(PMScript.DisableAttacks(0.4f));
                     StartCoroutine(PMScript.DisableMovement(0.2f));
-                    StartCoroutine(DisableShoot(shootDelay + 0.2f));
                     GameObject can = Instantiate(canPrefab, transform.position, transform.rotation);
                     can.GetComponent<CanScript>().Launch((transform.forward * 20) + (transform.up * 5));
                     isShooting = false;
@@ -156,7 +156,6 @@ public class PlayerAbilities : MonoBehaviour
                 {
                     StartCoroutine(PMScript.DisableAttacks(0.3f));
                     StartCoroutine(PMScript.DisableMovement(0.2f));
-                    StartCoroutine(DisableShoot(shootDelay + 0.4f));
                     GameObject match = Instantiate(matchPrefab, transform.position, transform.rotation);
                     match.GetComponent<MatchScript>().Launch((transform.forward * 15) + (transform.up * 5));
                     isShooting = false;
@@ -176,12 +175,12 @@ public class PlayerAbilities : MonoBehaviour
     void ShootCancelled(InputAction.CallbackContext context) { isShooting = false; }
     void ThrowAxes()
     {
-        if (PMScript.canMove && PMScript.canAttack && canShoot)
+        if (PMScript.canMove && PMScript.canAttack && axeCount > 0)
         {
             if (LOIScript.LockedOn == LOstates.On)
             {
                 if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f && canShoot)
-                {
+                {   
                     //forward
                     return;
                 }
@@ -190,7 +189,12 @@ public class PlayerAbilities : MonoBehaviour
                     //backward
                     return;
                 }
-                //direction based
+                StartCoroutine(PMScript.DisableAttacks(0.3f));
+                StartCoroutine(PMScript.DisableMovement(0.2f));
+                GameObject axe = Instantiate(axePrefab, transform.position, transform.rotation);
+                axe.GetComponent<ThrownHatchet>().player = gameObject;
+                axe.GetComponent<ThrownHatchet>().Throw(LOIScript.LockedOnEnemy.transform.position, 1);
+                axeCount--;
                 return;
             }
             else if (LOIScript.LockedOn == LOstates.None)
@@ -206,14 +210,10 @@ public class PlayerAbilities : MonoBehaviour
                     //backward
                     return;
                 }
+                //forward
                 return;
             }
-            StartCoroutine(PMScript.DisableAttacks(0.3f));
-            StartCoroutine(PMScript.DisableMovement(0.2f));
-            StartCoroutine(DisableShoot(shootDelay + 0.3f));
-            GameObject axe = Instantiate(axePrefab, transform.position, transform.rotation);
-            axe.GetComponent<ThrownHatchet>().player = gameObject;
-            //axe.GetComponent<ThrownHatchet>().FrontSpin(LOIScript.FindClosest(gameObject.transform).transform.position );
+            //try find enemy, then neutral, else forward
         }
     }
     void WhileShooting()
@@ -235,11 +235,14 @@ public class PlayerAbilities : MonoBehaviour
     }
     void CreateGasCloud(Vector3 direction)
     {
-        Quaternion q = UnityEngine.Random.rotation;
-        q.x = 0;
-        q.z = 0;
-        Instantiate(gasPrefab, transform.position + (direction * GasShootDistance), q);
-        StartCoroutine(DisableShoot(shootDelay));
+        if (canShoot)
+        {
+            Quaternion q = UnityEngine.Random.rotation;
+            q.x = 0;
+            q.z = 0;
+            Instantiate(gasPrefab, transform.position + (direction * GasShootDistance), q);
+            StartCoroutine(DisableShoot(shootDelay));
+        }
     }
     void Dash(Vector3 direction)
     {

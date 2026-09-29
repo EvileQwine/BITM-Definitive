@@ -17,7 +17,6 @@ public class MatchScript : MonoBehaviour
         velocity.y = direction.y;
         velocity.z = direction.z;
         rb.linearVelocity = velocity;
-        rb.angularVelocity = new Vector3(0, 0, -10);
     }
     void OnTriggerEnter(Collider other)
     {

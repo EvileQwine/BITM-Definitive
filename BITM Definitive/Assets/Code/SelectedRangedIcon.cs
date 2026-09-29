@@ -12,7 +12,7 @@ public class SelectedRangedIcon : MonoBehaviour
 
     [SerializeField] Sprite hatchets;
     [SerializeField] Sprite gasCans;
-    public byte current = 0;
+    public byte current = 1;
 
     void Awake()
     {

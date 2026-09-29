@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 2429478045873068531}
   - component: {fileID: 8591991666468122944}
   - component: {fileID: 6968976560614378214}
+  - component: {fileID: 3120018371264617948}
+  - component: {fileID: 4254223633964179099}
   m_Layer: 0
   m_Name: CinemachineVirtualCamera
   m_TagString: Untagged
@@ -27,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852600931469357244}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.092532724, y: 0.0041885916, z: -0.00038925625, w: 0.99570084}
+  m_LocalRotation: {x: 0.09253273, y: 0.004202584, z: -0.00039055565, w: 0.9957008}
   m_LocalPosition: {x: -0.20943928, y: 5, z: -29.99927}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -125,6 +127,47 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
+--- !u!114 &3120018371264617948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852600931469357244}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449ef5ebbe24720439ec31d15f7b6f3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineVolumeSettings
+  Weight: 1
+  FocusTracking: 0
+  FocusTarget: {fileID: 0}
+  FocusOffset: 0
+  Profile: {fileID: 11400000, guid: efb0af64a78fbef4685c4edc1757ca1c, type: 2}
+--- !u!114 &4254223633964179099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852600931469357244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &1144585900506110202
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +196,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144585900506110202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.092532724, y: 0.004188588, z: -0.00038925497, w: 0.9957008}
+  m_LocalRotation: {x: 0.09253275, y: 0.0042025843, z: -0.0003905558, w: 0.9957007}
   m_LocalPosition: {x: -0.20943928, y: 5, z: -29.99927}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -307,7 +350,7 @@ GameObject:
   - component: {fileID: 2229037515076188699}
   - component: {fileID: 2155095817107570266}
   m_Layer: 0
-  m_Name: CameaFollow
+  m_Name: CameraFollow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
