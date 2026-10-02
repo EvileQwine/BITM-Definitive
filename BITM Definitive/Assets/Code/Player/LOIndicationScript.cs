@@ -80,7 +80,7 @@ public class LOIndicationScript : MonoBehaviour
     public GameObject FindClosest(Transform searchPos)
     {
         GameObject closest;
-        EnemyScript[] temp = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
+        EnemyScript[] temp = FindObjectsByType<EnemyScript>();
         List<GameObject> enemies = new(); 
         for (int i = 0; i < temp.Length; i++)
         {

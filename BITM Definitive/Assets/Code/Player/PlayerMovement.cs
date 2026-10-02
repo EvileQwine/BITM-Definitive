@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Start()
     {
-        LOIScript = FindFirstObjectByType<LOIndicationScript>();
+        LOIScript = FindAnyObjectByType<LOIndicationScript>();
         raycastDistance = (GetComponent<CapsuleCollider>().height * transform.localScale.y / 2) + 0.2f;
     }
     void OnEnable()

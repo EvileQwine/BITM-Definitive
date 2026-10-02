@@ -24,12 +24,12 @@ public class MatchScript : MonoBehaviour
         {
             if (other.GetComponent<GasScript>() != null)
             {
-                GasScript[] gasses = FindObjectsByType<GasScript>(FindObjectsSortMode.None);
+                GasScript[] gasses = FindObjectsByType<GasScript>();
                 foreach (GasScript gas in gasses)
                 {
                     gas.Explode();
                 }
-                EnemyScript[] enemies = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
+                EnemyScript[] enemies = FindObjectsByType<EnemyScript>();
                 foreach (EnemyScript es in enemies)
                 {
                     es.ShouldExplode();

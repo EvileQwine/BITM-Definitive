@@ -30,7 +30,7 @@ public class PlayerHealthScript : MonoBehaviour
     }
     void Start()
     {
-        LOIScript = FindFirstObjectByType<LOIndicationScript>();
+        LOIScript = FindAnyObjectByType<LOIndicationScript>();
     }
     void Update()
     {

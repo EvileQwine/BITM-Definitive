@@ -26,7 +26,7 @@ public class CanScript : MonoBehaviour
             if (other.gameObject.GetComponent<EnemyScript>() != null)
             {
                 EnemyScript collided = other.gameObject.GetComponent<EnemyScript>();
-                collided.RemoveHealth(10, 1);
+                collided.WasHit("GasCan");
             }
             for (int i = 0; i < 3; i++)
             {

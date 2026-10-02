@@ -7,13 +7,14 @@ public class ThrownHatchet : MonoBehaviour
 {
     Rigidbody rb;
     public GameObject player;
-    [SerializeField] int rSpeed = 650;
-    [SerializeField] int mSpeed = 50;
-    enum Rotation
+    [SerializeField] int rSpeed = 800;
+    [SerializeField] int mSpeed = 40;
+    GameObject _OB;
+    public enum Rotation
     {
-        None, Forward, Backward 
+        None, Forward, Pull, Push, 
     }
-    Rotation rot = Rotation.None;
+    public Rotation rot = Rotation.None;
     bool rebounded = false;
     int unstuckCount = 0;
     void Awake()
@@ -21,20 +22,30 @@ public class ThrownHatchet : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         StartCoroutine(Unstuck());
     }
-    public void Throw(Vector3 direction, int i)
+    public void Throw(GameObject ob, int i)
     {
         rot = (Rotation)i;
         if (rot == Rotation.Forward)
         {
+            _OB = ob;
             transform.localScale = new Vector3(transform.localScale.x, -transform.localScale.y, transform.localScale.z);
         }
-        transform.LookAt(direction);
-        direction = transform.forward * mSpeed;
+        StartCoroutine(Findtarget());
+    }
+    IEnumerator Findtarget()
+    {
+        GameObject curOb = _OB;
+        Vector3 direction = (_OB.transform.position - transform.position).normalized * mSpeed;
         Vector3 velocity = rb.linearVelocity;
         velocity.x = direction.x;
         velocity.y = direction.y;
         velocity.z = direction.z;
         rb.linearVelocity = velocity;
+        yield return new WaitForSeconds(0.2f);
+        if (curOb == _OB)
+        {
+            StartCoroutine(Findtarget());
+        }
     }
     void OnTriggerEnter(Collider other)
     {
@@ -49,15 +60,24 @@ public class ThrownHatchet : MonoBehaviour
         }
         else if (other.gameObject.GetComponent<EnemyScript>() != null)
         {
-            other.gameObject.GetComponent<EnemyScript>().Knockback(new Vector3(0, 20, 0));
-            other.gameObject.GetComponent<EnemyScript>().RemoveHealth(20, 1);
+            EnemyScript es = other.gameObject.GetComponent<EnemyScript>();
+            if (rot == Rotation.Forward)
+            {
+                if (es.isGrounded)
+                {
+                    es.WasHit("AxeNeutralGrounded");
+                }
+                else
+                {
+                    es.WasHit("AxeNeutralAir");
+                }
+            }
         }
         if (other.gameObject.GetComponent<EnemyScript>() != null || other.gameObject.layer == 3)
         {
             if (!rebounded)
             {
-                transform.rotation = Quaternion.Euler(0, 0, -90);
-                Throw(player.transform.position, 1);
+                Throw(player, 1);
                 rebounded = true;
             }
         }
@@ -68,7 +88,11 @@ public class ThrownHatchet : MonoBehaviour
         {
             transform.Rotate(new Vector3(rSpeed, 0, 0) * Time.deltaTime);
         }
-        else if (rot == Rotation.Backward)
+        else if (rot == Rotation.Push)
+        {
+            transform.Rotate(new Vector3(-rSpeed, 0, 0) * Time.deltaTime);
+        }
+        else if (rot == Rotation.Pull)
         {
             transform.Rotate(new Vector3(-rSpeed, 0, 0) * Time.deltaTime);
         }
@@ -76,16 +100,11 @@ public class ThrownHatchet : MonoBehaviour
     IEnumerator Unstuck()
     {
         yield return new WaitForSeconds(1);
-        float distance = Vector3.Distance(player.transform.position, transform.position);
-        if (distance < 300)
-        {
-            player.GetComponent<PlayerAbilities>().axeCount++;
-            Destroy(gameObject);
-        }
         unstuckCount++;
-        if (unstuckCount == 20)
+        if (unstuckCount == 10)
         {
             player.GetComponent<PlayerAbilities>().axeCount++;
+            Debug.Log("Too Long");
             Destroy(gameObject);
         }
         StartCoroutine(Unstuck());

@@ -50,7 +50,7 @@ public class PlayerAbilities : MonoBehaviour
     }
     void Start()
     {
-        LOIScript = FindFirstObjectByType<LOIndicationScript>();
+        LOIScript = FindAnyObjectByType<LOIndicationScript>();
     }
     public float MeterFill()
     {
@@ -193,7 +193,7 @@ public class PlayerAbilities : MonoBehaviour
                 StartCoroutine(PMScript.DisableMovement(0.2f));
                 GameObject axe = Instantiate(axePrefab, transform.position, transform.rotation);
                 axe.GetComponent<ThrownHatchet>().player = gameObject;
-                axe.GetComponent<ThrownHatchet>().Throw(LOIScript.LockedOnEnemy.transform.position, 1);
+                axe.GetComponent<ThrownHatchet>().Throw(LOIScript.LockedOnEnemy, 1);
                 axeCount--;
                 return;
             }

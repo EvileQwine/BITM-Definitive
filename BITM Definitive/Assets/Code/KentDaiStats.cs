@@ -12,11 +12,11 @@ public class KentDaiStats : MonoBehaviour
     void Awake()
     {
         textMesh = GetComponent<TextMeshProUGUI>();
-        LOIScript = FindFirstObjectByType<LOIndicationScript>();
+        LOIScript = FindAnyObjectByType<LOIndicationScript>();
     }
     void Start()
     {
-        EnemyScript[] temp = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
+        EnemyScript[] temp = FindObjectsByType<EnemyScript>();
         for (int i = 0; i < temp.Length; i++)
         {
             if (!temp[i].gameObject.GetComponent<EnemyScript>().canDie)
