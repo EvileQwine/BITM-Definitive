@@ -118,7 +118,6 @@ public class EnemyScript : MonoBehaviour
     public void WasHit(string attackname)
     {
         //Debug.Log(attackname);
-        //transform.LookAt(new Vector3(transform.position.x, FindAnyObjectByType<PlayerMovement>().gameObject.transform.position.y, transform.position.z));
         Quaternion lookRotation = Quaternion.LookRotation((new Vector3(FindAnyObjectByType<PlayerMovement>().gameObject.transform.position.x,
             transform.position.y, FindAnyObjectByType<PlayerMovement>().gameObject.transform.position.z) - transform.position).normalized);
         transform.rotation = lookRotation;

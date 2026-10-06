@@ -180,20 +180,30 @@ public class PlayerAbilities : MonoBehaviour
             if (LOIScript.LockedOn == LOstates.On)
             {
                 if (Vector3.Dot(PMScript.horMovement, transform.forward) > 0.8f && canShoot)
-                {   
-                    //forward
+                {
+                    StartCoroutine(PMScript.DisableAttacks(0.3f));
+                    StartCoroutine(PMScript.DisableMovement(0.2f));
+                    GameObject pAxe = Instantiate(axePrefab, transform.position, transform.rotation);
+                    pAxe.GetComponent<ThrownHatchet>().player = gameObject;
+                    pAxe.GetComponent<ThrownHatchet>().Throw(LOIScript.LockedOnEnemy, 2);
+                    axeCount--;
                     return;
                 }
                 else if (Vector3.Dot(PMScript.horMovement, transform.forward) < -0.8f)
                 {
-                    //backward
+                    StartCoroutine(PMScript.DisableAttacks(0.3f));
+                    StartCoroutine(PMScript.DisableMovement(0.2f));
+                    GameObject pAxe = Instantiate(axePrefab, transform.position, transform.rotation);
+                    pAxe.GetComponent<ThrownHatchet>().player = gameObject;
+                    pAxe.GetComponent<ThrownHatchet>().Throw(LOIScript.LockedOnEnemy, 1);
+                    axeCount--;
                     return;
                 }
                 StartCoroutine(PMScript.DisableAttacks(0.3f));
                 StartCoroutine(PMScript.DisableMovement(0.2f));
                 GameObject axe = Instantiate(axePrefab, transform.position, transform.rotation);
                 axe.GetComponent<ThrownHatchet>().player = gameObject;
-                axe.GetComponent<ThrownHatchet>().Throw(LOIScript.LockedOnEnemy, 1);
+                axe.GetComponent<ThrownHatchet>().Throw(LOIScript.LockedOnEnemy, 0);
                 axeCount--;
                 return;
             }

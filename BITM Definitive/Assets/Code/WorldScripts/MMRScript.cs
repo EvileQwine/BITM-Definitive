@@ -17,6 +17,9 @@ public class MMRScript : MonoBehaviour
             { "GasExplosion", 10 },
             { "AxeNeutralGrounded", 5 },
             { "AxeNeutralAir", 5 },
+            { "AxePush", 7 },
+            { "AxePullGround", 7 },
+            { "AxePullAir", 7 },
         };
     }
     public float DamageReturn(string id)
@@ -32,6 +35,9 @@ public class MMRScript : MonoBehaviour
             { "GasExplosion", transform.up * 30},
             { "AxeNeutralGrounded",  transform.up * 20  },
             { "AxeNeutralAir",  (transform.up * 5) + (transform.forward * -5)},
+            { "AxePush",  (transform.up * 3) + (transform.forward * -15)},
+            { "AxePullGround",  (transform.up * 3) + (transform.forward * 15)},
+            { "AxePullAir",  (transform.up * -1) + (transform.forward * 5)},
         };
         return _knockback[id];
     }
