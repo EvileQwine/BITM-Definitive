@@ -111,15 +111,30 @@ public class ThrownHatchet : MonoBehaviour
                     es.WasHit("AxePush");
                     break;
                 case Rotation.PrePull:
-                    if (es.isGrounded)
+                    if (pullPointProgression == 0)
                     {
-                        es.WasHit("AxeNeutralGrounded");
+                        if (es.isGrounded)
+                        {
+                            es.WasHit("AxeNeutralGrounded");
+                        }
+                        else
+                        {
+                            es.WasHit("AxeNeutralAir");
+                        }
+                        Throw(player, 0);
                     }
                     else
                     {
-                        es.WasHit("AxeNeutralAir");
+                        if (es.isGrounded)
+                        {
+                            es.WasHit("AxePullGround");
+                        }
+                        else
+                        {
+                            es.WasHit("AxePullAir");
+                        }
+                        Throw(player, 0);
                     }
-                    Throw(player, 0);
                     break;
                 case Rotation.Pull:
                     if (es.isGrounded)
@@ -136,7 +151,7 @@ public class ThrownHatchet : MonoBehaviour
         }
         if (other.gameObject.GetComponent<EnemyScript>() != null || other.gameObject.layer == 3)
         {
-            if (!rebounded)
+            if (!rebounded && rot != Rotation.Pull)
             {
                 rb.linearVelocity = Vector3.zero;
                 if (rot == Rotation.PrePull)

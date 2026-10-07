@@ -105,6 +105,10 @@ public class PlayerMovement : MonoBehaviour
         {
             CheckGrounded();
         }
+        if (UnityEngine.Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = Vector3.zero;
+        }
     }
     void FixedUpdate()
     {
