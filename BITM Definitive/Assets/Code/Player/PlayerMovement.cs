@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Windows;
 
 public class PlayerMovement : MonoBehaviour
@@ -107,7 +108,8 @@ public class PlayerMovement : MonoBehaviour
         }
         if (UnityEngine.Input.GetKeyDown(KeyCode.R))
         {
-            transform.position = Vector3.zero;
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(currentSceneName);
         }
     }
     void FixedUpdate()

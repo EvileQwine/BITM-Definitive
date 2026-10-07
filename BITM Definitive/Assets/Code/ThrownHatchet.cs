@@ -85,7 +85,7 @@ public class ThrownHatchet : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (rebounded)
+            if (rebounded || rot == Rotation.Pull)
             {
                 player.GetComponent<PlayerAbilities>().axeCount++;
                 Destroy(gameObject);
@@ -111,30 +111,15 @@ public class ThrownHatchet : MonoBehaviour
                     es.WasHit("AxePush");
                     break;
                 case Rotation.PrePull:
-                    if (pullPointProgression == 0)
+                    if (es.isGrounded)
                     {
-                        if (es.isGrounded)
-                        {
-                            es.WasHit("AxeNeutralGrounded");
-                        }
-                        else
-                        {
-                            es.WasHit("AxeNeutralAir");
-                        }
-                        Throw(player, 0);
+                        es.WasHit("AxeNeutralGrounded");
                     }
                     else
                     {
-                        if (es.isGrounded)
-                        {
-                            es.WasHit("AxePullGround");
-                        }
-                        else
-                        {
-                            es.WasHit("AxePullAir");
-                        }
-                        Throw(player, 0);
+                        es.WasHit("AxeNeutralAir");
                     }
+                    Throw(player, 0);
                     break;
                 case Rotation.Pull:
                     if (es.isGrounded)
